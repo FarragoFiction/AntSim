@@ -16,7 +16,7 @@ class World {
     static int worldHeight = 2000;
     int minHeight = -1000;
     int maxHeight = 0;
-    int tickRate = 1000;
+    int tickRate = 100;
     int minWidth = -1000;
     int maxWidth = 0;
     CanvasElement screenCanvas = new CanvasElement(width:cameraWidth,height:cameraHeight);
@@ -25,7 +25,12 @@ class World {
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
     World() {
-        citizens.add(new Citizen(1000,1000));
+        for(int i = 0; i<1; i++) {
+            citizens.add(new Citizen(1000, 1000));
+            citizens.add(new Citizen(1000, 1000)..canDig=true);
+
+        }
+
     }
 
     void attachToScreen(Element container) async {
