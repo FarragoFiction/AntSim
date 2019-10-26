@@ -16,8 +16,6 @@ class Citizen {
     int size = 18;
     bool goRight = true;
     bool canDig = false;
-    //if falling can't choose to move till you are no longer falling
-    bool falling = false;
 
     Citizen(int this.x, int this.y) {
         imageLeft = new ImageElement(src: imageLocationLeft);
@@ -46,6 +44,18 @@ class Citizen {
         return true;
     }
 
+    bool falling(CanvasElement dirtCanvas) {
+        ImageData imgData = dirtCanvas.context2D.getImageData(x, y+size, size,size);
+        Uint8ClampedList data = imgData.data; //Uint8ClampedList
+        for(int i =0; i<data.length; i+=4) {
+            if(data[i+3]> 200){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //TODO pheremone check for direction (and ability to put pheremones down)
     void move(CanvasElement dirtCanvas) {
         //TODO check if you're falling first.
         if(new Random().nextDouble() < 0.1) {
@@ -53,7 +63,13 @@ class Citizen {
         }
         int xgoal = x+(Math.cos(angle* Math.pi/180)*speed).round();
         int ygoal = y+(Math.sin(angle*Math.pi/180)*speed).round();
-        digDirt(xgoal,ygoal, dirtCanvas);
+        if(falling(dirtCanvas)) {
+            print("falling");
+            ygoal = y + 10;
+            xgoal = x;
+        }else {
+            digDirt(xgoal, ygoal, dirtCanvas);
+        }
 
         if(canMove(xgoal,ygoal,dirtCanvas)){
             x = xgoal;

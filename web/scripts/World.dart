@@ -25,10 +25,9 @@ class World {
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
     World() {
-        for(int i = 0; i<1; i++) {
-            citizens.add(new Citizen(1000, 1000));
+        for(int i = 0; i<10; i++) {
+            citizens.add(new Citizen(1000, 500));
             citizens.add(new Citizen(1000, 1000)..canDig=true);
-
         }
 
     }
