@@ -1,30 +1,60 @@
 import 'dart:html';
+import 'package:LoaderLib/Loader.dart';
 
 class World {
-    CanvasElement canvas = new CanvasElement(width:1000,height:1000);
+
+
     //TODO probably seperate out the camera into its own thing
     int cameraUpperLeftX = -500;
     int cameraUpperLeftY = -500;
-    int cameraWidth = 1000;
-    int cameraHeight = 1000;
+    static int cameraWidth = 1000;
+    static int cameraHeight = 1000;
     int minHeight = -1000;
     int maxHeight = 0;
-
+    int minWidth = -1000;
+    int maxWidth = 0;
+    CanvasElement screenCanvas = new CanvasElement(width:cameraWidth,height:cameraHeight);
+    //not just what's on screen
+    CanvasElement dirtCanvas = new CanvasElement(width:2000,height:2000);
     World() {
-
     }
 
-    void attachToScreen(Element container) {
-        container.append(canvas);
+    void attachToScreen(Element container) async {
+        container.append(screenCanvas);
+        ImageElement img = await Loader.getResource("images/dirtbox.png");
+        dirtCanvas.context2D.drawImage(img,0,0);
+
         //TODO figure out what portion of the image to render.
-        canvas.style.backgroundImage = "url(images/skybox.png)";
+        screenCanvas.style.backgroundImage = "url(images/skybox.png)";
         syncCamera();
-        canvas.onMouseMove.listen((MouseEvent e) {
-            Rectangle rect = canvas.getBoundingClientRect();
+        bool mouseDown = false;
+
+        screenCanvas.onMouseMove.listen((MouseEvent e) {
+            Rectangle rect = screenCanvas.getBoundingClientRect();
             Point point = new Point(e.client.x-rect.left, e.client.y-rect.top);
             moveCamera(point);
-
+            if(mouseDown) {
+                removeChunk(point);
+            }
         });
+
+
+        screenCanvas.onMouseDown.listen((MouseEvent e) {
+            mouseDown = true;
+        });
+
+        screenCanvas.onMouseUp.listen((MouseEvent e) {
+            mouseDown = false;
+        });
+    }
+
+    void removeChunk(Point point) {
+        double x = point.x -cameraUpperLeftX;
+        double y = point.y -cameraUpperLeftY;
+        print("removing chunk at position ${x} , ${y}");
+        int size = 13;
+        dirtCanvas.context2D.clearRect(x-size/2,y-size/2,size, size);
+        syncCamera();
     }
 
     void moveCamera(Point p) {
@@ -44,13 +74,17 @@ class World {
 
         if(cameraUpperLeftY > maxHeight) cameraUpperLeftY = maxHeight;
         if(cameraUpperLeftY < minHeight) cameraUpperLeftY = minHeight;
+        if(cameraUpperLeftX < minWidth) cameraUpperLeftX = minWidth;
+        if(cameraUpperLeftX > maxWidth) cameraUpperLeftX = maxWidth;
 
         syncCamera();
     }
 
     void syncCamera() {
         print("syncing camera to ${cameraUpperLeftX}px ${cameraUpperLeftY}px ");
-        canvas.style.backgroundPosition = "${cameraUpperLeftX}px ${cameraUpperLeftY}px";
+        screenCanvas.style.backgroundPosition = "${cameraUpperLeftX}px ${cameraUpperLeftY}px";
+        screenCanvas.context2D.clearRect(0,0,cameraWidth, cameraHeight);
+        screenCanvas.context2D.drawImage(dirtCanvas, cameraUpperLeftX, cameraUpperLeftY);
     }
 
 }
