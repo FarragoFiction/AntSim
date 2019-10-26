@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:html';
 import 'package:LoaderLib/Loader.dart';
+
+import 'Citizen.dart';
 
 class World {
 
@@ -9,14 +12,20 @@ class World {
     int cameraUpperLeftY = -500;
     static int cameraWidth = 1000;
     static int cameraHeight = 1000;
+    static int worldWidth = 2000;
+    static int worldHeight = 2000;
     int minHeight = -1000;
     int maxHeight = 0;
+    int tickRate = 1000;
     int minWidth = -1000;
     int maxWidth = 0;
     CanvasElement screenCanvas = new CanvasElement(width:cameraWidth,height:cameraHeight);
     //not just what's on screen
-    CanvasElement dirtCanvas = new CanvasElement(width:2000,height:2000);
+    CanvasElement dirtCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
+    CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
+    List<Citizen> citizens = new List<Citizen>();
     World() {
+        citizens.add(new Citizen(1000,1000));
     }
 
     void attachToScreen(Element container) async {
@@ -80,11 +89,21 @@ class World {
         syncCamera();
     }
 
+    void tick() {
+        citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
+        citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas));
+        syncCamera();
+        new Timer(new Duration(milliseconds: tickRate), () => {
+            tick()
+        });
+    }
+
     void syncCamera() {
         print("syncing camera to ${cameraUpperLeftX}px ${cameraUpperLeftY}px ");
         screenCanvas.style.backgroundPosition = "${cameraUpperLeftX}px ${cameraUpperLeftY}px";
         screenCanvas.context2D.clearRect(0,0,cameraWidth, cameraHeight);
         screenCanvas.context2D.drawImage(dirtCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        screenCanvas.context2D.drawImage(citizenCanvas, cameraUpperLeftX, cameraUpperLeftY);
     }
 
 }
