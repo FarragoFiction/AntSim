@@ -4,8 +4,7 @@ import 'scripts/World.dart';
 
 void main() async{
   World world = new World();
-  world.attachToScreen(querySelector("#output"));
-  world.tick();
+
   InputElement fileElement = new InputElement();
   fileElement.type = "file";
   fileElement.classes.add("fileUploadButton");
@@ -29,4 +28,6 @@ void main() async{
       world.tick();
     });
   });
+  world.attachToScreen(querySelector("#output"));
+  world.tick();
 }

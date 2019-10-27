@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html';
+import 'package:CommonLib/Random.dart';
 import 'package:LoaderLib/Loader.dart';
 
 import 'Citizen.dart';
@@ -25,9 +26,12 @@ class World {
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
     World() {
-        for(int i = 0; i<3; i++) {
+        Random rand = new Random();
+        for(int i = 0; i<10; i++) {
+            int x = rand.nextInt(1500)+30;
+            int y = rand.nextInt(1500)+30;
             for(int j = 0; j<10; j++) {
-                citizens.add(new Citizen(1000, 20));
+                citizens.add(new Citizen(x, y));
             }
             citizens.add(new Citizen(1000, 1000)..canDig=true);
         }
@@ -39,7 +43,7 @@ class World {
     }
 
     void initImage() async {
-        if(dirt == null) dirt = await Loader.getResource("images/obama.png");
+        if(dirt == null) dirt = await Loader.getResource("images/tutorial.png");
     }
 
     void attachToScreen(Element container) async {
