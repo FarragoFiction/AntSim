@@ -6,7 +6,7 @@ import 'Citizen.dart';
 
 class World {
 
-
+    ImageElement dirt;
     //TODO probably seperate out the camera into its own thing
     int cameraUpperLeftX = -500;
     int cameraUpperLeftY = -500;
@@ -14,29 +14,38 @@ class World {
     static int cameraHeight = 1000;
     static int worldWidth = 2000;
     static int worldHeight = 2000;
-    int minHeight = -1000;
-    int maxHeight = 0;
+    static int minHeight = -1000;
+    static int maxHeight = 0;
     int tickRate = 100;
-    int minWidth = -1000;
-    int maxWidth = 0;
+    static int minWidth = -1000;
+    static int maxWidth = 0;
     CanvasElement screenCanvas = new CanvasElement(width:cameraWidth,height:cameraHeight);
     //not just what's on screen
     CanvasElement dirtCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
     World() {
-        for(int i = 0; i<10; i++) {
-            citizens.add(new Citizen(1000, 500));
+        for(int i = 0; i<3; i++) {
+            for(int j = 0; j<10; j++) {
+                citizens.add(new Citizen(1000, 20));
+            }
             citizens.add(new Citizen(1000, 1000)..canDig=true);
         }
 
     }
 
+    void teardown() {
+        screenCanvas.remove();
+    }
+
+    void initImage() async {
+        if(dirt == null) dirt = await Loader.getResource("images/obama.png");
+    }
+
     void attachToScreen(Element container) async {
         container.append(screenCanvas);
-        ImageElement img = await Loader.getResource("images/dirtbox.png");
-        dirtCanvas.context2D.drawImage(img,0,0);
-
+        await initImage();
+        dirtCanvas.context2D.drawImageScaled(dirt,0,0,2000,2000);
         //TODO figure out what portion of the image to render.
         screenCanvas.style.backgroundImage = "url(images/skybox.png)";
         syncCamera();
@@ -65,7 +74,7 @@ class World {
         double x = point.x -cameraUpperLeftX;
         double y = point.y -cameraUpperLeftY;
         print("removing chunk at position ${x} , ${y}");
-        int size = 13;
+        int size = 33;
         dirtCanvas.context2D.clearRect(x-size/2,y-size/2,size, size);
         syncCamera();
     }
