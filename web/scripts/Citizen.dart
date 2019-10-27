@@ -97,7 +97,9 @@ class Citizen {
     }
 
     CanvasElement initializeCanvas(ImageElement image) {
-        CanvasElement canvas = new CanvasElement(width: image.width, height: image.width);
+        int width = image.width;
+        if(width == null || width == 0) width = 18;
+        CanvasElement canvas = new CanvasElement(width: width, height: width);
         image.onLoad.listen((Event e) {
             canvas.context2D.drawImage(image,0,0);
             if(canDig) {
