@@ -26,6 +26,7 @@ class World {
     CanvasElement screenCanvas = new CanvasElement(width:cameraWidth,height:cameraHeight);
     //not just what's on screen
     CanvasElement dirtCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
+    CanvasElement queenPheremoneCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
     World() {
@@ -49,9 +50,17 @@ class World {
         if(dirt == null) dirt = await Loader.getResource("images/dirtbox.png");
     }
 
+    void drawQueenPheremones() {
+        queenPheremoneCanvas.context2D.clearRect(0,0,queenPheremoneCanvas.width, queenPheremoneCanvas.height);
+        for(Queen queen in queens) {
+            queen.drawPheremones(queenPheremoneCanvas);
+        }
+    }
+
     void attachToScreen(Element container) async {
         container.append(screenCanvas);
         await initImage();
+        drawQueenPheremones();
         dirtCanvas.context2D.drawImageScaled(dirt,0,0,2000,2000);
         //TODO figure out what portion of the image to render.
         screenCanvas.style.backgroundImage = "url(images/skybox.png)";
@@ -109,6 +118,7 @@ class World {
 
     void tick() {
         citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
+        drawQueenPheremones();
         citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas));
         queens.forEach((Queen c) => c.tick(citizenCanvas,dirtCanvas));
 
@@ -123,6 +133,8 @@ class World {
         screenCanvas.context2D.clearRect(0,0,cameraWidth, cameraHeight);
         screenCanvas.context2D.drawImage(dirtCanvas, cameraUpperLeftX, cameraUpperLeftY);
         screenCanvas.context2D.drawImage(citizenCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+
     }
 
 }

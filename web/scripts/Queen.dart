@@ -1,6 +1,6 @@
 import 'dart:html';
 import 'dart:typed_data';
-
+import 'dart:math' as Math;
 import 'World.dart';
 
 class Queen {
@@ -40,6 +40,18 @@ class Queen {
     }
 
 
+    void drawPheremones(CanvasElement queenPheremoneCanvas) {
+        print("drawing pheremones");
+        int radius;
+        for(int i = 0; i < 10; i++) {
+            radius = i * 100;
+            queenPheremoneCanvas.context2D.setFillColorRgb(46, 0, 23, 0.1);
+            queenPheremoneCanvas.context2D.beginPath();
+            queenPheremoneCanvas.context2D.arc(
+                x, y, radius, 0, Math.pi * 2, true);
+            queenPheremoneCanvas.context2D.fill();
+        }
+    }
 
     void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas) {
         print("queen tick");
