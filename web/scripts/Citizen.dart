@@ -15,6 +15,9 @@ class Citizen {
     //in world coordinates, not screen coordinates
     int x;
     int y;
+    //eventually you retire, no infini digging plz
+    int chunksDug = 0;
+    int maxChunks = 1300;
     int angle = 0;
     int runSpeed = 10;
     int digSpeed = 5;
@@ -93,13 +96,26 @@ class Citizen {
     //TODO instead of clearing a rect, remove anything brown
     void digDirt(x,y,CanvasElement dirtCanvas) {
         int size = 20;
-        if(canDig) dirtCanvas.context2D.clearRect(x,y,size, size);
+        if(canDig) {
+            dirtCanvas.context2D.clearRect(x, y, size, size);
+            chunksDug ++;
+            if(chunksDug >maxChunks) {
+                canDig = false;
+                initializeSprites();
+            }
+        }
     }
 
     CanvasElement initializeCanvas(ImageElement image) {
         int width = image.width;
         if(width == null || width == 0) width = 18;
         CanvasElement canvas = new CanvasElement(width: width, height: width);
+        if(image.width != 0) {
+            canvas.context2D.drawImage(image,0,0);
+            if(canDig) {
+                tintRed(canvas);
+            }
+        }
         image.onLoad.listen((Event e) {
             canvas.context2D.drawImage(image,0,0);
             if(canDig) {
@@ -121,12 +137,12 @@ class Citizen {
 
     void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas) {
         move(dirtCanvas);
-        if(canvasLeft == null) {
-            canvasLeft = initializeCanvas(imageLeft);
-        }
-        if(canvasRight == null) {
-            canvasRight = initializeCanvas(imageRight);
-        }
+        if(canvasLeft == null || canvasRight == null) initializeSprites();
         goRight ? citizenCanvas.context2D.drawImage(canvasRight,x, y):citizenCanvas.context2D.drawImage(canvasLeft,x, y);
+    }
+
+    void initializeSprites() {
+          canvasLeft = initializeCanvas(imageLeft);
+          canvasRight = initializeCanvas(imageRight);
     }
 }

@@ -4,6 +4,7 @@ import 'package:CommonLib/Random.dart';
 import 'package:LoaderLib/Loader.dart';
 
 import 'Citizen.dart';
+import 'Queen.dart';
 
 class World {
 
@@ -20,6 +21,8 @@ class World {
     int tickRate = 100;
     static int minWidth = -1000;
     static int maxWidth = 0;
+    //i only expect one but one never can be too careful
+    List<Queen> queens = new List<Queen>();
     CanvasElement screenCanvas = new CanvasElement(width:cameraWidth,height:cameraHeight);
     //not just what's on screen
     CanvasElement dirtCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
@@ -35,7 +38,7 @@ class World {
             }
             citizens.add(new Citizen(1000, 1000)..canDig=true);
         }
-
+        queens.add(new Queen());
     }
 
     void teardown() {
@@ -43,7 +46,7 @@ class World {
     }
 
     void initImage() async {
-        if(dirt == null) dirt = await Loader.getResource("images/tutorial.png");
+        if(dirt == null) dirt = await Loader.getResource("images/dirtbox.png");
     }
 
     void attachToScreen(Element container) async {
@@ -77,14 +80,12 @@ class World {
     void removeChunk(Point point) {
         double x = point.x -cameraUpperLeftX;
         double y = point.y -cameraUpperLeftY;
-        print("removing chunk at position ${x} , ${y}");
         int size = 33;
         dirtCanvas.context2D.clearRect(x-size/2,y-size/2,size, size);
         syncCamera();
     }
 
     void moveCamera(Point p) {
-        print("moving camera to $p");
         //left
         if(p.x < 100) {
             cameraUpperLeftX += 10;
@@ -109,6 +110,8 @@ class World {
     void tick() {
         citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
         citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas));
+        queens.forEach((Queen c) => c.tick(citizenCanvas,dirtCanvas));
+
         syncCamera();
         new Timer(new Duration(milliseconds: tickRate), () => {
             tick()
@@ -116,7 +119,6 @@ class World {
     }
 
     void syncCamera() {
-        print("syncing camera to ${cameraUpperLeftX}px ${cameraUpperLeftY}px ");
         screenCanvas.style.backgroundPosition = "${cameraUpperLeftX}px ${cameraUpperLeftY}px";
         screenCanvas.context2D.clearRect(0,0,cameraWidth, cameraHeight);
         screenCanvas.context2D.drawImage(dirtCanvas, cameraUpperLeftX, cameraUpperLeftY);
