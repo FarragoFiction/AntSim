@@ -13,6 +13,7 @@ class Queen {
     //no life span , utterly immortal
     //BUT, if no food, will not produce offspring
     int size = 18;
+    int trueSize = 100;
 
     Queen() {
         image=new ImageElement(src: imageLocation);
@@ -20,7 +21,7 @@ class Queen {
 
     CanvasElement initializeCanvas(ImageElement image) {
         int width = image.width;
-        if(width == null || width == 0) width = 18;
+        if(width == null || width == 0) width = trueSize;
         CanvasElement canvas = new CanvasElement(width: width, height: width);
         image.onLoad.listen((Event e) {
             canvas.context2D.drawImage(image,0,0);
