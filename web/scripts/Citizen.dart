@@ -17,7 +17,7 @@ class Citizen {
     int y;
     //eventually you retire, no infini digging plz
     int chunksDug = 0;
-    int maxChunks = 1300;
+    int maxChunks = 333;
     int angle = 0;
     int runSpeed = 10;
     int digSpeed = 5;
