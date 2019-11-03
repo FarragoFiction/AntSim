@@ -70,9 +70,43 @@ class Citizen {
         return true;
     }
 
+
+    //returns if relevant pheremone was detected enough to change directions
+    //we aren't going for perfect here, just fast. ants detect a SQUARE around themselves, not a circle.
+    //deal with it.
+    bool considerPheremones(CanvasElement queenPheremoneCanvas) {
+        return false;
+        //todo seperate this out to consider queen pheremones, once there are other layers
+        int width = size;
+        ImageData imgData = queenPheremoneCanvas.context2D.getImageData((x-size/2).round(), (y+size/2).round(), size,size);
+        Uint8ClampedList data = imgData.data; //Uint8ClampedList
+        int max = 0;
+        List<int> possibleAngles = new List<int>();
+        //TODO if this is too slow just randomly sample a few
+        for(int i =0; i<data.length; i+=4) {
+            if(data[i+3]>= max){
+                //if i'm at i = 13 of a 10 wide image
+                //then my x coordinate is 3, and my y coordinate is 1
+                // or i%10 and i/10 respectively
+                int x2 = i % width;
+                int y2 = (i / width).floor();
+                if(max != data[i+3]) {
+                    possibleAngles.clear();
+                }
+                max = data[i+3];
+                possibleAngles.add(((180/Math.pi)*Math.atan2((x-x2).abs(), (y-y2).abs())).round());
+            }
+        }
+        angle = new Random().pickFrom(possibleAngles);
+        if(canDig) print("angle is $angle with max of $max");
+        return max > 0;
+    }
+
     //TODO pheremone check for direction (and ability to put pheremones down)
-    void move(CanvasElement dirtCanvas) {
-        if(new Random().nextDouble() < 0.1) {
+    void move(CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas) {
+        bool foundPheremone = considerPheremones(queenPheremoneCanvas);
+
+        if(!foundPheremone && new Random().nextDouble() < 0.1) {
             changeDirectionRandomly();
         }
         int speed = canDig ? digSpeed: runSpeed;
@@ -135,8 +169,8 @@ class Citizen {
       canvas.context2D.putImageData(imgData, 0,0);
     }
 
-    void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas) {
-        move(dirtCanvas);
+    void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas) {
+        move(dirtCanvas,queenPheremoneCanvas);
         if(canvasLeft == null || canvasRight == null) initializeSprites();
         goRight ? citizenCanvas.context2D.drawImage(canvasRight,x, y):citizenCanvas.context2D.drawImage(canvasLeft,x, y);
     }

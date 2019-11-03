@@ -42,20 +42,19 @@ class Queen {
 
 
     void drawPheremones(CanvasElement queenPheremoneCanvas) {
-        print("drawing pheremones");
-        int radius;
-        for(int i = 0; i < 10; i++) {
-            radius = i * 100;
-            queenPheremoneCanvas.context2D.setFillColorRgb(46, 0, 23, 0.1);
-            queenPheremoneCanvas.context2D.beginPath();
-            queenPheremoneCanvas.context2D.arc(
-                x, y, radius, 0, Math.pi * 2, true);
-            queenPheremoneCanvas.context2D.fill();
-        }
+        int radius = 1000;
+        int bands = 255;
+        var grd = queenPheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);
+        grd.addColorStop(0, "rgb(255, 0, 255, 1.0)");
+        grd.addColorStop(1, "rgb(0,   0, 0,0)");
+        queenPheremoneCanvas.context2D.beginPath();
+        queenPheremoneCanvas.context2D.arc(
+            x, y, radius, 0, Math.pi * 2, true);
+        queenPheremoneCanvas.context2D.fillStyle = grd;
+        queenPheremoneCanvas.context2D.fill();
     }
 
     void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas) {
-        print("queen tick");
         initializeSprites();
         //queens can't move but they CAN fall.
         if(falling(dirtCanvas)) {

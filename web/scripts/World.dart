@@ -119,7 +119,7 @@ class World {
     void tick() {
         citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
         drawQueenPheremones();
-        citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas));
+        citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas, queenPheremoneCanvas));
         queens.forEach((Queen c) => c.tick(citizenCanvas,dirtCanvas));
 
         syncCamera();
