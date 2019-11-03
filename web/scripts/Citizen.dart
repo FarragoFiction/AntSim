@@ -24,6 +24,7 @@ class Citizen {
     int size = 18;
     bool goRight = true;
     bool canDig = false;
+    int queenSmells = 0;
 
     Citizen(int this.x, int this.y) {
         imageLeft = new ImageElement(src: imageLocationLeft);
@@ -59,6 +60,7 @@ class Citizen {
         return true;
     }
 
+    //gravity is banned. it messes up pheremones.
     bool falling(CanvasElement dirtCanvas) {
         ImageData imgData = dirtCanvas.context2D.getImageData(x, y+size, size,size);
         Uint8ClampedList data = imgData.data; //Uint8ClampedList
@@ -98,48 +100,46 @@ class Citizen {
     //we aren't going for perfect here, just fast. ants detect a SQUARE around themselves, not a circle.
     //deal with it.
     bool considerPheremones(CanvasElement queenPheremoneCanvas) {
-        //todo seperate this out to consider queen pheremones, once there are other layers
-        int width = size*2;
-        ImageData imgData = queenPheremoneCanvas.context2D.getImageData(x, y, width,width);
-        Uint8ClampedList data = imgData.data; //Uint8ClampedList
-        int max = 0;
-        List<int> possibleIndices = new List<int>();
-        //TODO if this is too slow just randomly sample a few
-        for(int i =0; i<data.length; i+=4) {
-            if(data[i+3]>= max){
+        if(queenSmells <= 0) return considerQueen(queenPheremoneCanvas);
+        return false;
+    }
 
-                if(max != data[i+3]) {
-                    possibleIndices.clear();
-                    max = data[i+3];
-                }
-                possibleIndices.add(i);
-            }
-        }
-        if(max == 0 || possibleIndices.isEmpty) return false;
-        int index = new Random().pickFrom(possibleIndices);
-        if(index == null) return false;
-        angle = indexToAngle(index, width);
-        if(canDig) print("angle is $angle with max of $max");
-        return true;
+    bool considerQueen(CanvasElement queenPheremoneCanvas) {
+      int width = size*2;
+      ImageData imgData = queenPheremoneCanvas.context2D.getImageData(x, y, width,width);
+      Uint8ClampedList data = imgData.data; //Uint8ClampedList
+      if(data[3] == 255) queenSmells += 255; //gather smells
+      int max = 0;
+      List<int> possibleIndices = new List<int>();
+      //TODO if this is too slow just randomly sample a few
+      for(int i =0; i<data.length; i+=4) {
+          if(data[i+3]>= max){
+
+              if(max != data[i+3]) {
+                  possibleIndices.clear();
+                  max = data[i+3];
+              }
+              possibleIndices.add(i);
+          }
+      }
+      if(max == 0 || possibleIndices.isEmpty) return false;
+      int index = new Random().pickFrom(possibleIndices);
+      if(index == null) return false;
+      angle = indexToAngle(index, width);
+      return true;
     }
 
     //TODO pheremone check for direction (and ability to put pheremones down)
     void move(CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas, [bool secondTry = false]) {
         bool foundPheremone = considerPheremones(queenPheremoneCanvas);
 
-        if(secondTry || (!foundPheremone && new Random().nextDouble() < 0.1)) {
+        if(secondTry || (!foundPheremone && new Random().nextDouble() < 0.01)) {
             changeDirectionRandomly();
         }
         int speed = canDig ? digSpeed: runSpeed;
         int xgoal = x+(Math.cos(angle* Math.pi/180)*speed).round();
         int ygoal = y+(Math.sin(angle*Math.pi/180)*speed).round();
-        if(falling(dirtCanvas)) {
-            ygoal = y + 10;
-            xgoal = x;
-        }else {
-            digDirt(xgoal, ygoal, dirtCanvas);
-        }
-
+        digDirt(xgoal, ygoal, dirtCanvas);
         if(canMove(xgoal,ygoal,dirtCanvas)){
             x = xgoal;
             y = ygoal;
@@ -192,6 +192,7 @@ class Citizen {
     }
 
     void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas) {
+        queenSmells += -1;
         move(dirtCanvas,queenPheremoneCanvas);
         if(canvasLeft == null || canvasRight == null) initializeSprites();
         goRight ? citizenCanvas.context2D.drawImage(canvasRight,x, y):citizenCanvas.context2D.drawImage(canvasLeft,x, y);
