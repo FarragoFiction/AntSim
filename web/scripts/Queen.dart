@@ -53,7 +53,7 @@ class Queen {
         int bands = 255;
         var grd = queenPheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);
         grd.addColorStop(0, "rgb(255, 0, 255, 1.0)");
-        grd.addColorStop(1, "rgb(0,   0, 0,0)");
+        grd.addColorStop(1, "rgb(255, 0, 255,0)");
         queenPheremoneCanvas.context2D.beginPath();
         queenPheremoneCanvas.context2D.arc(
             x, y, radius, 0, Math.pi * 2, true);

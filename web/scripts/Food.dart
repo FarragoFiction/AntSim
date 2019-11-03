@@ -46,10 +46,10 @@ class Food {
 
     void drawPheremones(CanvasElement pheremoneCanvas) {
         int radius = 500;
-        int bands = 255;
+        int bands = 10;
         var grd = pheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);
-        grd.addColorStop(0, "rgb(255, 0, 255, 1.0)");
-        grd.addColorStop(1, "rgb(0,   0, 0,0)");
+        grd.addColorStop(0, "rgb(255, 0, 0, 1.0)");
+        grd.addColorStop(1, "rgb(255, 0, 0,0.0)");
         pheremoneCanvas.context2D.beginPath();
         pheremoneCanvas.context2D.arc(
             x, y, radius, 0, Math.pi * 2, true);

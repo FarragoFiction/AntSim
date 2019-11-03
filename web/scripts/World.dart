@@ -43,7 +43,7 @@ class World {
             citizens.add(new Citizen(1000, 900)..canDig=true);
         }
         queens.add(new Queen());
-        for(int i =0; i< 33; i++) {
+        for(int i =0; i< 3; i++) {
             int x = rand.nextInt(1500)+30;
             int y = rand.nextInt(1500)+30;
             spawnFoodAtPoint(x,y);
@@ -169,8 +169,10 @@ class World {
         screenCanvas.context2D.clearRect(0,0,cameraWidth, cameraHeight);
         screenCanvas.context2D.drawImage(dirtCanvas, cameraUpperLeftX, cameraUpperLeftY);
         screenCanvas.context2D.drawImage(citizenCanvas, cameraUpperLeftX, cameraUpperLeftY);
-        //only turn on phermone layer for debug purposes
-       //screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        //only turn on phermone layers for debug purposes
+        //screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+       // screenCanvas.context2D.drawImage(foodPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+
 
     }
 
