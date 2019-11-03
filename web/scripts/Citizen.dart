@@ -117,7 +117,7 @@ class Citizen {
         }
         if(max == 0 || possibleIndices.isEmpty) return false;
         int index = new Random().pickFrom(possibleIndices);
-        if(index == null) return false; 
+        if(index == null) return false;
         angle = indexToAngle(index, width);
         if(canDig) print("angle is $angle with max of $max");
         return true;

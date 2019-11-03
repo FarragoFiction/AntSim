@@ -37,7 +37,7 @@ class World {
             for(int j = 0; j<10; j++) {
                 citizens.add(new Citizen(x, y));
             }
-            citizens.add(new Citizen(1000, 1000)..canDig=true);
+            citizens.add(new Citizen(1000, 900)..canDig=true);
         }
         queens.add(new Queen());
     }
