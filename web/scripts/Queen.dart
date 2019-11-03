@@ -1,6 +1,8 @@
 import 'dart:html';
 import 'dart:typed_data';
 import 'dart:math' as Math;
+import 'package:CommonLib/Random.dart';
+
 import 'World.dart';
 
 class Queen {
@@ -9,13 +11,14 @@ class Queen {
     CanvasElement canvas;
     //in world coordinates, not screen coordinates
     int x = 1000;
-    int y = 1500;
+    int y = 1000;
     //no life span , utterly immortal
     //BUT, if no food, will not produce offspring
     int size = 18;
     int trueSize = 100;
 
     Queen() {
+        x = new Random().nextInt(1800)+100;
         image=new ImageElement(src: imageLocation);
     }
 

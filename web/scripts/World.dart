@@ -124,7 +124,7 @@ class World {
 
         syncCamera();
         new Timer(new Duration(milliseconds: tickRate), () => {
-            tick()
+            //tick()
         });
     }
 

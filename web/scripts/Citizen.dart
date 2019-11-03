@@ -77,17 +77,16 @@ class Citizen {
     int indexToAngle(int index, int width) {
         int x2 = iToX(index, width);
         int y2 = iToY(index,width);
-        int deltaX = (x-x2);
-        int deltaY = (y-y2);
-       // print("x is $x, x2 is $x2, deltaX is $deltaX");
-        //print("y is $y, y2 is $y2, deltaY is $deltaY");
-
-        return ((180/Math.pi)*Math.atan2(deltaX, deltaY)).round();
+        print("x is 0, x2 is $x2");
+        print("y is 0, y2 is $y2");
+        print("so atan2 would be ${Math.atan2(y2, x2)} and converted to degrees thats ${((180/Math.pi)*Math.atan2(y2, x2)).round()} ");
+        return ((180/Math.pi)*Math.atan2(y2, x2)).round();
     }
     //if i'm at i = 13 of a 10 wide image
     //then my x coordinate is 3, and my y coordinate is 1
     // or i%10 and i/10 respectively
     int iToX(int i, int width) {
+        if(i<0) window.console.error("Why is the index negative ($i) in inToX?");
         return i % width;
     }
 
@@ -105,29 +104,31 @@ class Citizen {
         ImageData imgData = queenPheremoneCanvas.context2D.getImageData((x-size/2).round(), (y+size/2).round(), size,size);
         Uint8ClampedList data = imgData.data; //Uint8ClampedList
         int max = 0;
-        List<int> possibleAngles = new List<int>();
+        List<int> possibleIndices = new List<int>();
         //TODO if this is too slow just randomly sample a few
         for(int i =0; i<data.length; i+=4) {
             if(data[i+3]>= max){
 
                 if(max != data[i+3]) {
-                    possibleAngles.clear();
+                    possibleIndices.clear();
                     max = data[i+3];
                 }
-                possibleAngles.add(indexToAngle(i, width));
+                possibleIndices.add(i);
             }
         }
-        if(max == 0 || possibleAngles.isEmpty) return false;
-        angle = new Random().pickFrom(possibleAngles);
+        if(max == 0 || possibleIndices.isEmpty) return false;
+        int index = new Random().pickFrom(possibleIndices);
+        if(index == null) return false;
+        angle = indexToAngle(index, width);
         if(canDig) print("angle is $angle with max of $max");
-        return max > 0;
+        return true;
     }
 
     //TODO pheremone check for direction (and ability to put pheremones down)
-    void move(CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas) {
+    void move(CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas, [bool secondTry = false]) {
         bool foundPheremone = considerPheremones(queenPheremoneCanvas);
 
-        if(!foundPheremone && new Random().nextDouble() < 0.1) {
+        if(secondTry || (!foundPheremone && new Random().nextDouble() < 0.1)) {
             changeDirectionRandomly();
         }
         int speed = canDig ? digSpeed: runSpeed;
@@ -144,7 +145,8 @@ class Citizen {
             x = xgoal;
             y = ygoal;
         }else {
-            changeDirectionRandomly();
+            //try to move again, but ignore ai
+            if(!secondTry) move(dirtCanvas,queenPheremoneCanvas,true);
         }
     }
 
