@@ -124,7 +124,7 @@ class World {
 
         syncCamera();
         new Timer(new Duration(milliseconds: tickRate), () => {
-            //tick()
+            tick()
         });
     }
 
@@ -133,7 +133,7 @@ class World {
         screenCanvas.context2D.clearRect(0,0,cameraWidth, cameraHeight);
         screenCanvas.context2D.drawImage(dirtCanvas, cameraUpperLeftX, cameraUpperLeftY);
         screenCanvas.context2D.drawImage(citizenCanvas, cameraUpperLeftX, cameraUpperLeftY);
-        screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+       // screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
 
     }
 

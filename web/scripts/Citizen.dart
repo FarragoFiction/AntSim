@@ -75,18 +75,17 @@ class Citizen {
     }
 
     int indexToAngle(int index, int width) {
-        int x2 = iToX(index, width);
-        int y2 = iToY(index,width);
-        print("x is 0, x2 is $x2");
-        print("y is 0, y2 is $y2");
-        print("so atan2 would be ${Math.atan2(y2, x2)} and converted to degrees thats ${((180/Math.pi)*Math.atan2(y2, x2)).round()} ");
+        int x2 = iToX(index, width) - (width/2).round();
+        int y2 = iToY(index,width) - (width/2).round();
+       // print("x2 is $x2");
+       // print("y2 is $y2");
+        //print("so atan2 would be ${Math.atan2(y2, x2)} and converted to degrees thats ${((180/Math.pi)*Math.atan2(y2, x2)).round()} ");
         return ((180/Math.pi)*Math.atan2(y2, x2)).round();
     }
     //if i'm at i = 13 of a 10 wide image
     //then my x coordinate is 3, and my y coordinate is 1
     // or i%10 and i/10 respectively
     int iToX(int i, int width) {
-        if(i<0) window.console.error("Why is the index negative ($i) in inToX?");
         return i % width;
     }
 
@@ -101,7 +100,7 @@ class Citizen {
     bool considerPheremones(CanvasElement queenPheremoneCanvas) {
         //todo seperate this out to consider queen pheremones, once there are other layers
         int width = size*2;
-        ImageData imgData = queenPheremoneCanvas.context2D.getImageData((x-size/2).round(), (y+size/2).round(), size,size);
+        ImageData imgData = queenPheremoneCanvas.context2D.getImageData(x, y, width,width);
         Uint8ClampedList data = imgData.data; //Uint8ClampedList
         int max = 0;
         List<int> possibleIndices = new List<int>();
@@ -118,7 +117,7 @@ class Citizen {
         }
         if(max == 0 || possibleIndices.isEmpty) return false;
         int index = new Random().pickFrom(possibleIndices);
-        if(index == null) return false;
+        if(index == null) return false; 
         angle = indexToAngle(index, width);
         if(canDig) print("angle is $angle with max of $max");
         return true;

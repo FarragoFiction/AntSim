@@ -18,7 +18,7 @@ class Queen {
     int trueSize = 100;
 
     Queen() {
-        x = new Random().nextInt(1800)+100;
+        x = new Random().nextInt(200)+100;
         image=new ImageElement(src: imageLocation);
     }
 
