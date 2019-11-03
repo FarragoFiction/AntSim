@@ -42,7 +42,7 @@ class Queen {
 
 
     void drawPheremones(CanvasElement queenPheremoneCanvas) {
-        int radius = 1000;
+        int radius = 1200;
         int bands = 255;
         var grd = queenPheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);
         grd.addColorStop(0, "rgb(255, 0, 255, 1.0)");

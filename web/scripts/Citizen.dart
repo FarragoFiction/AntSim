@@ -70,14 +70,38 @@ class Citizen {
         return true;
     }
 
+    int xyToIndex(int x2, int y2, int width) {
+        return y2*width + x2;
+    }
+
+    int indexToAngle(int index, int width) {
+        int x2 = iToX(index, width);
+        int y2 = iToY(index,width);
+        int deltaX = (x-x2);
+        int deltaY = (y-y2);
+       // print("x is $x, x2 is $x2, deltaX is $deltaX");
+        //print("y is $y, y2 is $y2, deltaY is $deltaY");
+
+        return ((180/Math.pi)*Math.atan2(deltaX, deltaY)).round();
+    }
+    //if i'm at i = 13 of a 10 wide image
+    //then my x coordinate is 3, and my y coordinate is 1
+    // or i%10 and i/10 respectively
+    int iToX(int i, int width) {
+        return i % width;
+    }
+
+    int iToY(int i, int width) {
+        return (i / width).floor();
+    }
+
 
     //returns if relevant pheremone was detected enough to change directions
     //we aren't going for perfect here, just fast. ants detect a SQUARE around themselves, not a circle.
     //deal with it.
     bool considerPheremones(CanvasElement queenPheremoneCanvas) {
-        return false;
         //todo seperate this out to consider queen pheremones, once there are other layers
-        int width = size;
+        int width = size*2;
         ImageData imgData = queenPheremoneCanvas.context2D.getImageData((x-size/2).round(), (y+size/2).round(), size,size);
         Uint8ClampedList data = imgData.data; //Uint8ClampedList
         int max = 0;
@@ -85,18 +109,15 @@ class Citizen {
         //TODO if this is too slow just randomly sample a few
         for(int i =0; i<data.length; i+=4) {
             if(data[i+3]>= max){
-                //if i'm at i = 13 of a 10 wide image
-                //then my x coordinate is 3, and my y coordinate is 1
-                // or i%10 and i/10 respectively
-                int x2 = i % width;
-                int y2 = (i / width).floor();
+
                 if(max != data[i+3]) {
                     possibleAngles.clear();
+                    max = data[i+3];
                 }
-                max = data[i+3];
-                possibleAngles.add(((180/Math.pi)*Math.atan2((x-x2).abs(), (y-y2).abs())).round());
+                possibleAngles.add(indexToAngle(i, width));
             }
         }
+        if(max == 0 || possibleAngles.isEmpty) return false;
         angle = new Random().pickFrom(possibleAngles);
         if(canDig) print("angle is $angle with max of $max");
         return max > 0;
