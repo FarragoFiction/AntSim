@@ -4,6 +4,7 @@ import 'package:CommonLib/Random.dart';
 import 'package:LoaderLib/Loader.dart';
 
 import 'Citizen.dart';
+import 'Food.dart';
 import 'Queen.dart';
 
 class World {
@@ -25,10 +26,13 @@ class World {
     static int maxWidth = 0;
     //i only expect one but one never can be too careful
     List<Queen> queens = new List<Queen>();
+    List<Food> food = new List<Food>();
     CanvasElement screenCanvas = new CanvasElement(width:cameraWidth,height:cameraHeight);
     //not just what's on screen
     CanvasElement dirtCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     CanvasElement queenPheremoneCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
+    CanvasElement foodPheremoneCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
+
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
     World() {
@@ -39,6 +43,15 @@ class World {
             citizens.add(new Citizen(1000, 900)..canDig=true);
         }
         queens.add(new Queen());
+        for(int i =0; i< 33; i++) {
+            int x = rand.nextInt(1500)+30;
+            int y = rand.nextInt(1500)+30;
+            spawnFoodAtPoint(x,y);
+        }
+    }
+
+    void spawnFoodAtPoint(int x, int y) {
+        food.add(new Food(x,y));
     }
 
     void teardown() {
@@ -53,6 +66,13 @@ class World {
         queenPheremoneCanvas.context2D.clearRect(0,0,queenPheremoneCanvas.width, queenPheremoneCanvas.height);
         for(Queen queen in queens) {
             queen.drawPheremones(queenPheremoneCanvas);
+        }
+    }
+
+    void drawFoodPheremones() {
+        foodPheremoneCanvas.context2D.clearRect(0,0,foodPheremoneCanvas.width, foodPheremoneCanvas.height);
+        for(Food f in food) {
+            f.drawPheremones(foodPheremoneCanvas);
         }
     }
 
@@ -120,15 +140,28 @@ class World {
     }
 
     void tick() {
-        citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
-        drawQueenPheremones();
-        citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas, queenPheremoneCanvas));
-        queens.forEach((Queen c) => c.tick(citizenCanvas,dirtCanvas,this));
-
+        citizenTick();
+        queenTick();
+        foodTick();
         syncCamera();
         new Timer(new Duration(milliseconds: tickRate), () => {
-            tick()
+        tick()
         });
+    }
+
+    void citizenTick() {
+        citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
+        citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas, queenPheremoneCanvas));
+    }
+
+    void queenTick() {
+        drawQueenPheremones();
+        queens.forEach((Queen c) => c.tick(citizenCanvas,dirtCanvas,this));
+    }
+
+    void foodTick() {
+        drawFoodPheremones();
+        food.forEach((Food f) => f.tick(citizenCanvas,dirtCanvas,this));
     }
 
     void syncCamera() {
