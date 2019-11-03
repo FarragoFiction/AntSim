@@ -12,8 +12,10 @@ class World {
     //TODO probably seperate out the camera into its own thing
     int cameraUpperLeftX = -500;
     int cameraUpperLeftY = -500;
+    int maxSubjects = 113;
     static int cameraWidth = 1000;
     static int cameraHeight = 1000;
+    int maxCitizens = 113;
     static int worldWidth = 2000;
     static int worldHeight = 2000;
     static int minHeight = -1000;
@@ -31,12 +33,9 @@ class World {
     List<Citizen> citizens = new List<Citizen>();
     World() {
         Random rand = new Random();
-        for(int i = 0; i<10; i++) {
+        for(int i = 0; i<3; i++) {
             int x = rand.nextInt(1500)+30;
             int y = rand.nextInt(1500)+30;
-            for(int j = 0; j<10; j++) {
-                citizens.add(new Citizen(x, y));
-            }
             citizens.add(new Citizen(1000, 900)..canDig=true);
         }
         queens.add(new Queen());
@@ -116,11 +115,15 @@ class World {
         syncCamera();
     }
 
+    bool canSpawn() {
+        return citizens.length < maxCitizens;
+    }
+
     void tick() {
         citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
         drawQueenPheremones();
         citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas, queenPheremoneCanvas));
-        queens.forEach((Queen c) => c.tick(citizenCanvas,dirtCanvas));
+        queens.forEach((Queen c) => c.tick(citizenCanvas,dirtCanvas,this));
 
         syncCamera();
         new Timer(new Duration(milliseconds: tickRate), () => {
@@ -133,7 +136,8 @@ class World {
         screenCanvas.context2D.clearRect(0,0,cameraWidth, cameraHeight);
         screenCanvas.context2D.drawImage(dirtCanvas, cameraUpperLeftX, cameraUpperLeftY);
         screenCanvas.context2D.drawImage(citizenCanvas, cameraUpperLeftX, cameraUpperLeftY);
-       // screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        //only turn on phermone layer for debug purposes
+       //screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
 
     }
 

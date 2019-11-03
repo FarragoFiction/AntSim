@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:math' as Math;
 import 'package:CommonLib/Random.dart';
 
+import 'Citizen.dart';
 import 'World.dart';
 
 class Queen {
@@ -17,9 +18,11 @@ class Queen {
     int size = 18;
     int trueSize = 100;
 
+    int food = 113;
+
     Queen() {
         x = new Random().nextInt(1500)+100;
-        y = new Random().nextInt(500) + 1000;
+        y = new Random().nextInt(200) + 1000;
         image=new ImageElement(src: imageLocation);
     }
 
@@ -46,7 +49,7 @@ class Queen {
 
 
     void drawPheremones(CanvasElement queenPheremoneCanvas) {
-        int radius = 1200;
+        int radius = 2000;
         int bands = 255;
         var grd = queenPheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);
         grd.addColorStop(0, "rgb(255, 0, 255, 1.0)");
@@ -58,14 +61,20 @@ class Queen {
         queenPheremoneCanvas.context2D.fill();
     }
 
-    void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas) {
+    void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, World world) {
+        food += -1;
         initializeSprites();
-        //queens can't move but they CAN fall.
-        if(falling(dirtCanvas)) {
-            print("queen is falling");
-            y += 10;
+        //keep queen fed and she'll make more citizens
+        if(world.canSpawn() && food > 0) {
+            if(new Random().nextDouble() > 0.9) {
+                food += -1;
+                world.citizens.add(new Citizen(x, y));
+                if(new Random().nextDouble() > 0.9) {
+                    food += -13;
+                    world.citizens.add(new Citizen(x, y)..canDig = true);
+                }
+            }
         }
-        //TODO spawn more echidnas
         citizenCanvas.context2D.drawImage(canvas,x, y);
     }
 

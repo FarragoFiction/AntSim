@@ -7,6 +7,8 @@ import 'World.dart';
 class Citizen {
     String imageLocationLeft = "images/ballofsin.png";
     String imageLocationRight = "images/ballofsinRight.png";
+    String state = "NONE";
+    static const SEARCHING_QUEEN = "SEARCHING_QUEEN";
 
     ImageElement imageLeft;
     ImageElement imageRight;
@@ -17,14 +19,14 @@ class Citizen {
     int y;
     //eventually you retire, no infini digging plz
     int chunksDug = 0;
-    int maxChunks = 333;
+    int maxChunks = 666; //devil creatures
     int angle = 0;
     int runSpeed = 10;
     int digSpeed = 5;
     int size = 18;
     bool goRight = true;
     bool canDig = false;
-    int queenSmells = 0;
+    int queenSmells = -1000;
 
     Citizen(int this.x, int this.y) {
         imageLeft = new ImageElement(src: imageLocationLeft);
@@ -105,10 +107,16 @@ class Citizen {
     }
 
     bool considerQueen(CanvasElement queenPheremoneCanvas) {
-      int width = size*2;
+      int width = (size).floor();
       ImageData imgData = queenPheremoneCanvas.context2D.getImageData(x, y, width,width);
       Uint8ClampedList data = imgData.data; //Uint8ClampedList
-      if(data[3] == 255) queenSmells += 255; //gather smells
+      if(data[3] > 245) {
+          queenSmells += 255; //gather smells
+          if(queenSmells > 0 && state == SEARCHING_QUEEN) {
+              state = "NONE";
+              initializeSprites();
+          }
+      }
       int max = 0;
       List<int> possibleIndices = new List<int>();
       //TODO if this is too slow just randomly sample a few
@@ -170,12 +178,16 @@ class Citizen {
             canvas.context2D.drawImage(image,0,0);
             if(canDig) {
                 tintRed(canvas);
+            }else if (state == SEARCHING_QUEEN) {
+                tintYellow(canvas);
             }
         }
         image.onLoad.listen((Event e) {
             canvas.context2D.drawImage(image,0,0);
             if(canDig) {
                 tintRed(canvas);
+            }else if (state == SEARCHING_QUEEN) {
+                tintYellow(canvas);
             }
         });
         return canvas;
@@ -186,12 +198,27 @@ class Citizen {
           0, 0, canvas.width, canvas.height);
       Uint8ClampedList data = imgData.data; //Uint8ClampedList
       for (int i = 0; i < data.length; i += 4) {
-          data[i] = 255;
+          data[i] = Math.max(255, data[i]+100);
       }
       canvas.context2D.putImageData(imgData, 0,0);
     }
 
+    void tintYellow(CanvasElement canvas) {
+        ImageData imgData = canvas.context2D.getImageData(
+            0, 0, canvas.width, canvas.height);
+        Uint8ClampedList data = imgData.data; //Uint8ClampedList
+        for (int i = 0; i < data.length; i += 4) {
+            data[i] = Math.max(255, data[i]+100);
+            data[i+1]= Math.max(255, data[i+1]+100);
+        }
+        canvas.context2D.putImageData(imgData, 0,0);
+    }
+
     void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas) {
+        if(queenSmells == 1 && state != SEARCHING_QUEEN) {
+            state = SEARCHING_QUEEN;
+            initializeSprites();
+        }
         queenSmells += -1;
         move(dirtCanvas,queenPheremoneCanvas);
         if(canvasLeft == null || canvasRight == null) initializeSprites();
