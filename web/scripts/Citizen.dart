@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:CommonLib/Random.dart';
 import 'dart:math' as Math;
 
+import 'Food.dart';
+import 'Queen.dart';
 import 'World.dart';
 class Citizen {
     String imageLocationLeft = "images/ballofsin.png";
@@ -14,6 +16,7 @@ class Citizen {
     ImageElement imageRight;
     CanvasElement canvasLeft;
     CanvasElement canvasRight;
+    Food food;
     //in world coordinates, not screen coordinates
     int x;
     int y;
@@ -101,16 +104,20 @@ class Citizen {
     //returns if relevant pheremone was detected enough to change directions
     //we aren't going for perfect here, just fast. ants detect a SQUARE around themselves, not a circle.
     //deal with it.
-    bool considerPheremones(CanvasElement queenPheremoneCanvas, CanvasElement foodCanvas) {
-        if(queenSmells <= 0) return considerQueen(queenPheremoneCanvas);
+    bool considerPheremones(World world) {
+        if(queenSmells <= 0) return considerQueen(world);
+        if(food == null) return considerFood(world);
         return false;
     }
 
-    bool considerQueen(CanvasElement queenPheremoneCanvas) {
+    bool considerQueen(World world) {
       int width = (size).floor();
-      ImageData imgData = queenPheremoneCanvas.context2D.getImageData(x, y, width,width);
+      ImageData imgData = world.queenPheremoneCanvas.context2D.getImageData(x, y, width,width);
       Uint8ClampedList data = imgData.data; //Uint8ClampedList
-      if(data[3] > 245) {
+      if(data[3] > 250) {
+          if(food != null) {
+              world.giveQueenFood(this);
+          }
           queenSmells += 255; //gather smells
           if(queenSmells > 0 && state == SEARCHING_QUEEN) {
               state = "NONE";
@@ -137,9 +144,45 @@ class Citizen {
       return true;
     }
 
+    void carry(Food f) {
+        food = f;
+        f.beingCarried = true;
+    }
+
+    void drop() {
+        food.beingCarried = false;
+        food = null;
+    }
+
+    bool considerFood(World world) {
+        int width = (size).floor();
+        ImageData imgData = world.foodPheremoneCanvas.context2D.getImageData(x, y, width,width);
+        Uint8ClampedList data = imgData.data; //Uint8ClampedList
+        if(data[3] > 250 && food == null) {
+            world.giveCitizenFood(this);
+        }
+        int max = 0;
+        List<int> possibleIndices = new List<int>();
+        for(int i =0; i<data.length; i+=4) {
+            if(data[i+3]>= max){
+
+                if(max != data[i+3]) {
+                    possibleIndices.clear();
+                    max = data[i+3];
+                }
+                possibleIndices.add(i);
+            }
+        }
+        if(max == 0 || possibleIndices.isEmpty) return false;
+        int index = new Random().pickFrom(possibleIndices);
+        if(index == null) return false;
+        angle = indexToAngle(index, width);
+        return true;
+    }
+
     //TODO pheremone check for direction (and ability to put pheremones down)
-    void move(CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas, CanvasElement foodCanvas,[bool secondTry = false]) {
-        bool foundPheremone = considerPheremones(queenPheremoneCanvas,foodCanvas);
+    void move(World world , [bool secondTry = false]) {
+        bool foundPheremone = considerPheremones(world);
 
         if(secondTry || (!foundPheremone && new Random().nextDouble() < 0.01)) {
             changeDirectionRandomly();
@@ -147,13 +190,18 @@ class Citizen {
         int speed = canDig ? digSpeed: runSpeed;
         int xgoal = x+(Math.cos(angle* Math.pi/180)*speed).round();
         int ygoal = y+(Math.sin(angle*Math.pi/180)*speed).round();
-        digDirt(xgoal, ygoal, dirtCanvas);
-        if(canMove(xgoal,ygoal,dirtCanvas)){
+        digDirt(xgoal, ygoal, world.dirtCanvas);
+        if(canMove(xgoal,ygoal,world.dirtCanvas)){
             x = xgoal;
             y = ygoal;
         }else {
             //try to move again, but ignore ai
-            if(!secondTry) move(dirtCanvas,queenPheremoneCanvas,true);
+            if(!secondTry) move(world,true);
+            return;
+        }
+        if(food != null) {
+            food.x = x;
+            food.y = y;
         }
     }
 
@@ -214,15 +262,18 @@ class Citizen {
         canvas.context2D.putImageData(imgData, 0,0);
     }
 
-    void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas,CanvasElement foodPheremone) {
+    void tick(World world) {
         if(queenSmells == 1 && state != SEARCHING_QUEEN) {
             state = SEARCHING_QUEEN;
             initializeSprites();
         }
+        if(food != null) {
+            queenSmells = -1000; //shit find the queen.
+        }
         queenSmells += -1;
-        move(dirtCanvas,queenPheremoneCanvas,foodPheremone);
+        move(world);
         if(canvasLeft == null || canvasRight == null) initializeSprites();
-        goRight ? citizenCanvas.context2D.drawImage(canvasRight,x, y):citizenCanvas.context2D.drawImage(canvasLeft,x, y);
+        goRight ? world.citizenCanvas.context2D.drawImage(canvasRight,x, y):world.citizenCanvas.context2D.drawImage(canvasLeft,x, y);
     }
 
     void initializeSprites() {

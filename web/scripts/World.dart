@@ -151,7 +151,7 @@ class World {
 
     void citizenTick() {
         citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
-        citizens.forEach((Citizen c) => c.tick(citizenCanvas,dirtCanvas, queenPheremoneCanvas));
+        citizens.forEach((Citizen c) => c.tick(this));
     }
 
     void queenTick() {
@@ -162,6 +162,36 @@ class World {
     void foodTick() {
         drawFoodPheremones();
         food.forEach((Food f) => f.tick(citizenCanvas,dirtCanvas,this));
+    }
+
+    //find food nearest to x,y, to carry to the queen
+    void giveCitizenFood(Citizen c) {
+        //first find food
+        //then give it to the citizen (who will carry it)
+        Food chosen;
+        for(Food f in food) {
+            if((f.x - c.x).abs() < 10) {
+                chosen = f;
+                break;
+            }
+        }
+        if(chosen != null) {
+            c.carry(chosen);
+        }
+    }
+
+    //give queen nearest to this x,y food
+    void giveQueenFood(Citizen c) {
+        Queen chosen;
+        for(Queen q in queens) {
+            if((q.x - c.x).abs() < 10) {
+                chosen = q;
+                break;
+            }
+        }
+        if(chosen != null) {
+            chosen.beFed(c,this);
+        }
     }
 
     void syncCamera() {

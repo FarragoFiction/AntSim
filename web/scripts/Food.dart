@@ -15,6 +15,7 @@ class Food {
     int y = 1000;
     int size = 13;
     int trueSize = 100;
+    bool beingCarried = false;
 
     int food = 113;
 
@@ -45,6 +46,7 @@ class Food {
 
 
     void drawPheremones(CanvasElement pheremoneCanvas) {
+        if(beingCarried) return;
         int radius = 500;
         int bands = 10;
         var grd = pheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);

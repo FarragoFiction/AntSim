@@ -61,6 +61,14 @@ class Queen {
         queenPheremoneCanvas.context2D.fill();
     }
 
+    void beFed(Citizen c, World w) {
+        if(c.food != null) {
+            w.food.remove(c.food);
+            c.drop();
+            food += 113;
+        }
+    }
+
     void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, World world) {
         food += -1;
         initializeSprites();
