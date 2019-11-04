@@ -27,6 +27,8 @@ class Citizen {
     int runSpeed = 10;
     int digSpeed = 5;
     int size = 18;
+    int age = 0;
+    int maxAge = 113;
     bool goRight = true;
     bool canDig = false;
     int queenSmells = -1000;
@@ -154,6 +156,13 @@ class Citizen {
         food = null;
     }
 
+    void die(World w) {
+        drop();
+        Food myCorpse = new Food(x,y)..foodValue = 13; //enough to make a new bee, if you can collect it
+        w.food.add(myCorpse);
+        w.citizensToRemove.add(this);
+    }
+
     bool considerFood(World world) {
         int width = (size).floor();
         ImageData imgData = world.foodPheremoneCanvas.context2D.getImageData(x, y, width,width);
@@ -267,6 +276,8 @@ class Citizen {
             state = SEARCHING_QUEEN;
             initializeSprites();
         }
+        age ++;
+        if(age > maxAge) die(world);
         if(food != null) {
             queenSmells = -1000; //shit find the queen.
         }

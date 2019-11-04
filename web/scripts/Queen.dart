@@ -4,6 +4,7 @@ import 'dart:math' as Math;
 import 'package:CommonLib/Random.dart';
 
 import 'Citizen.dart';
+import 'Controls.dart';
 import 'World.dart';
 
 class Queen {
@@ -18,7 +19,7 @@ class Queen {
     int size = 18;
     int trueSize = 100;
 
-    int food = 113;
+    int antihunger = 113;
 
     Queen() {
         x = new Random().nextInt(1500)+100;
@@ -63,27 +64,32 @@ class Queen {
 
     void beFed(Citizen c, World w) {
         if(c.food != null) {
+            antihunger +=c.food.foodValue;
             w.food.remove(c.food);
             c.drop();
-            food += 113;
         }
     }
 
     void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, World world) {
-        food += -1;
+        antihunger += -1;
+        antihunger = Math.max(0,antihunger);
+        antihunger = Math.min(500, antihunger);
         initializeSprites();
         //keep queen fed and she'll make more citizens
-        if(world.canSpawn() && food > 0) {
+        if(world.canSpawn() && antihunger > 0) {
             if(new Random().nextDouble() > 0.9) {
-                food += -1;
+                antihunger += -1;
                 world.citizens.add(new Citizen(x, y));
-                if(new Random().nextDouble() > 0.9) {
-                    food += -13;
+                Controls.playSoundEffect("121990__tomf__coinbag");
+                if(new Random().nextDouble() > 0.3) {
+                    antihunger += -13;
                     world.citizens.add(new Citizen(x, y)..canDig = true);
                 }
             }
         }
-        citizenCanvas.context2D.drawImage(canvas,x, y);
+        double scale = antihunger/113;
+        if(scale < 0.5) scale = 0.5;
+        citizenCanvas.context2D.drawImageScaled(canvas,x,y,(trueSize*scale).round(), (trueSize*scale).round());
     }
 
     void initializeSprites() {

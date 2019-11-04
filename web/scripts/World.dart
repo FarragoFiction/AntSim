@@ -38,6 +38,8 @@ class World {
 
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
+    List<Citizen> citizensToRemove = new List<Citizen>();
+
     World() {
         Random rand = new Random();
         for(int i = 0; i<3; i++) {
@@ -179,6 +181,8 @@ class World {
     }
 
     void citizenTick() {
+        citizensToRemove.forEach((Citizen c) => citizens.remove(c));
+        citizensToRemove.clear();
         citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
         citizens.forEach((Citizen c) => c.tick(this));
     }

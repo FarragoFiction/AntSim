@@ -16,7 +16,7 @@ class Food {
     int size = 13;
     bool beingCarried = false;
 
-    int food = 113;
+    int foodValue = 113;
 
     Food(int this.x, int this.y) {
         image=new ImageElement(src: imageLocation);

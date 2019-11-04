@@ -4,6 +4,7 @@ import 'World.dart';
 
 abstract class Controls {
     static  List<ButtonElement> modeButtons = new List<ButtonElement>();
+    static AudioElement soundEffects = new AudioElement();
 
     static void toggleMode(ButtonElement chosen) {
         modeButtons.forEach((ButtonElement b) => b.classes.remove("mode-selected"));
@@ -74,5 +75,12 @@ abstract class Controls {
               world.tick();
           });
       });
+    }
+
+    static void playSoundEffect(String locationWithoutExtension) {
+        if(soundEffects.canPlayType("audio/mpeg").isNotEmpty) soundEffects.src = "SoundFX/${locationWithoutExtension}.mp3";
+        if(soundEffects.canPlayType("audio/ogg").isNotEmpty) soundEffects.src = "SoundFX/${locationWithoutExtension}.ogg";
+        soundEffects.play();
+
     }
 }
