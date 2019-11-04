@@ -8,7 +8,10 @@ import 'Food.dart';
 import 'Queen.dart';
 
 class World {
-
+    static const String DIGMODE = "DIGMODE";
+    static const String DIRTMODE = "DIRTMODE";
+    static const String FOODMODE = "FOODMODE";
+    String mode = DIGMODE;
     ImageElement dirt;
     //TODO probably seperate out the camera into its own thing
     int cameraUpperLeftX = -500;
@@ -51,6 +54,7 @@ class World {
     }
 
     void spawnFoodAtPoint(int x, int y) {
+        print("trying to spawn food at point $x, $y");
         food.add(new Food(x,y));
     }
 
@@ -91,13 +95,25 @@ class World {
             Point point = new Point(e.client.x-rect.left, e.client.y-rect.top);
             moveCamera(point);
             if(mouseDown) {
-                removeChunk(point);
+                if(mode == DIGMODE) {
+                    removeChunk(point);
+                }else if(mode == FOODMODE) {
+                    spawnFoodChunk(point);
+                }else if(mode == DIRTMODE) {
+                    spawnDirtChunk(point);
+                }
             }
         });
 
 
         screenCanvas.onMouseDown.listen((MouseEvent e) {
             mouseDown = true;
+            print("mode is $mode");
+            if(mode == FOODMODE) {
+                Rectangle rect = screenCanvas.getBoundingClientRect();
+                Point point = new Point(e.client.x-rect.left, e.client.y-rect.top);
+                spawnFoodChunk(point);
+            }
         });
 
         screenCanvas.onMouseUp.listen((MouseEvent e) {
@@ -110,6 +126,22 @@ class World {
         double y = point.y -cameraUpperLeftY;
         int size = 33;
         dirtCanvas.context2D.clearRect(x-size/2,y-size/2,size, size);
+        syncCamera();
+    }
+
+    void spawnDirtChunk(Point point) {
+        double x = point.x -cameraUpperLeftX;
+        double y = point.y -cameraUpperLeftY;
+        int size = 33;
+        dirtCanvas.context2D.setFillColorRgb(96,59,23);
+        dirtCanvas.context2D.fillRect(x-size/2,y-size/2,size, size);
+        syncCamera();
+    }
+
+    void spawnFoodChunk(Point point) {
+        double x = point.x -cameraUpperLeftX;
+        double y = point.y -cameraUpperLeftY;
+        spawnFoodAtPoint(x.round(),y.round());
         syncCamera();
     }
 
