@@ -14,7 +14,6 @@ class Food {
     int x = 1000;
     int y = 1000;
     int size = 13;
-    int trueSize = 100;
     bool beingCarried = false;
 
     int food = 113;
@@ -25,8 +24,11 @@ class Food {
 
     CanvasElement initializeCanvas(ImageElement image) {
         int width = image.width;
-        if(width == null || width == 0) width = trueSize;
+        if(width == null || width == 0) width = 13;
         CanvasElement canvas = new CanvasElement(width: width, height: width);
+        if(image.width != 0) {
+            canvas.context2D.drawImage(image,0,0);
+        }
         image.onLoad.listen((Event e) {
             canvas.context2D.drawImage(image,0,0);
         });

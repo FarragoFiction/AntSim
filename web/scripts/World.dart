@@ -54,7 +54,7 @@ class World {
     }
 
     void spawnFoodAtPoint(int x, int y) {
-        print("trying to spawn food at point $x, $y");
+        print("trying to spawn food at point $x, $y, total food is ${food.length}");
         food.add(new Food(x,y));
     }
 
@@ -97,8 +97,6 @@ class World {
             if(mouseDown) {
                 if(mode == DIGMODE) {
                     removeChunk(point);
-                }else if(mode == FOODMODE) {
-                    spawnFoodChunk(point);
                 }else if(mode == DIRTMODE) {
                     spawnDirtChunk(point);
                 }
@@ -142,7 +140,6 @@ class World {
         double x = point.x -cameraUpperLeftX;
         double y = point.y -cameraUpperLeftY;
         spawnFoodAtPoint(x.round(),y.round());
-        syncCamera();
     }
 
     void moveCamera(Point p) {
@@ -233,7 +230,7 @@ class World {
         screenCanvas.context2D.drawImage(citizenCanvas, cameraUpperLeftX, cameraUpperLeftY);
         //only turn on phermone layers for debug purposes
         //screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
-       // screenCanvas.context2D.drawImage(foodPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        //screenCanvas.context2D.drawImage(foodPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
 
 
     }
