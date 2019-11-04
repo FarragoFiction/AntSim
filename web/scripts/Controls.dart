@@ -3,6 +3,12 @@ import 'dart:html';
 import 'World.dart';
 
 abstract class Controls {
+    static  List<ButtonElement> modeButtons = new List<ButtonElement>();
+
+    static void toggleMode(ButtonElement chosen) {
+        modeButtons.forEach((ButtonElement b) => b.classes.remove("mode-selected"));
+        chosen.classes.add("mode-selected");
+    }
 
     static void generate(Element parent, World world) {
         DivElement container = new DivElement();
@@ -15,25 +21,32 @@ abstract class Controls {
 
     static void foodButton(DivElement container, World world) {
       ButtonElement foodButton = new ButtonElement()..text = "Food Mode";
+      modeButtons.add(foodButton);
       container.append(foodButton);
       foodButton.onClick.listen((Event e) {
           world.mode = World.FOODMODE;
+          toggleMode(foodButton);
       });
     }
 
     static void digButton(DivElement container, World world) {
        ButtonElement digButton = new ButtonElement()..text = "Dig Mode";
-      container.append(digButton);
+       toggleMode(digButton); //default
+       modeButtons.add(digButton);
+       container.append(digButton);
        digButton.onClick.listen((Event e) {
            world.mode = World.DIGMODE;
+           toggleMode(digButton);
        });
     }
 
     static void dirtButton(DivElement container, World world) {
         ButtonElement digButton = new ButtonElement()..text = "Dirt Mode";
+        modeButtons.add(digButton);
         container.append(digButton);
         digButton.onClick.listen((Event e) {
             world.mode = World.DIRTMODE;
+            toggleMode(digButton);
         });
     }
 
