@@ -101,7 +101,7 @@ class Citizen {
     //returns if relevant pheremone was detected enough to change directions
     //we aren't going for perfect here, just fast. ants detect a SQUARE around themselves, not a circle.
     //deal with it.
-    bool considerPheremones(CanvasElement queenPheremoneCanvas) {
+    bool considerPheremones(CanvasElement queenPheremoneCanvas, CanvasElement foodCanvas) {
         if(queenSmells <= 0) return considerQueen(queenPheremoneCanvas);
         return false;
     }
@@ -138,8 +138,8 @@ class Citizen {
     }
 
     //TODO pheremone check for direction (and ability to put pheremones down)
-    void move(CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas, [bool secondTry = false]) {
-        bool foundPheremone = considerPheremones(queenPheremoneCanvas);
+    void move(CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas, CanvasElement foodCanvas,[bool secondTry = false]) {
+        bool foundPheremone = considerPheremones(queenPheremoneCanvas,foodCanvas);
 
         if(secondTry || (!foundPheremone && new Random().nextDouble() < 0.01)) {
             changeDirectionRandomly();
@@ -214,13 +214,13 @@ class Citizen {
         canvas.context2D.putImageData(imgData, 0,0);
     }
 
-    void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas) {
+    void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, CanvasElement queenPheremoneCanvas,CanvasElement foodPheremone) {
         if(queenSmells == 1 && state != SEARCHING_QUEEN) {
             state = SEARCHING_QUEEN;
             initializeSprites();
         }
         queenSmells += -1;
-        move(dirtCanvas,queenPheremoneCanvas);
+        move(dirtCanvas,queenPheremoneCanvas,foodPheremone);
         if(canvasLeft == null || canvasRight == null) initializeSprites();
         goRight ? citizenCanvas.context2D.drawImage(canvasRight,x, y):citizenCanvas.context2D.drawImage(canvasLeft,x, y);
     }
