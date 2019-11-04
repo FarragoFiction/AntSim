@@ -16,7 +16,7 @@ class Food {
     int size = 13;
     bool beingCarried = false;
 
-    int foodValue = 113;
+    int foodValue = 255;
 
     Food(int this.x, int this.y) {
         image=new ImageElement(src: imageLocation);
@@ -69,7 +69,7 @@ class Food {
         if(foodValue <=0) {
             world.foodToRemove.add(this);
         }
-        double scale = foodValue/55;
+        double scale = foodValue/113;
         if(scale < 0.5) scale = 0.5;
         citizenCanvas.context2D.drawImageScaled(canvas,x,y,(size*scale).round(), (size*scale).round());    }
 

@@ -28,7 +28,7 @@ class Citizen {
     int digSpeed = 5;
     int size = 18;
     int age = 0;
-    int maxAge = 113;
+    int maxAge = 777;
     bool goRight = true;
     bool canDig = false;
     int queenSmells = -1000;
