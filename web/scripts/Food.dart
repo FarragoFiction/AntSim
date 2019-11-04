@@ -66,8 +66,12 @@ class Food {
         if(falling(dirtCanvas)) {
             y += 10;
         }
-        citizenCanvas.context2D.drawImage(canvas,x, y);
-    }
+        if(foodValue <=0) {
+            world.foodToRemove.add(this);
+        }
+        double scale = foodValue/55;
+        if(scale < 0.5) scale = 0.5;
+        citizenCanvas.context2D.drawImageScaled(canvas,x,y,(size*scale).round(), (size*scale).round());    }
 
     void initializeSprites() {
         if(canvas == null) {

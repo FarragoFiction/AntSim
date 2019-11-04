@@ -39,6 +39,7 @@ class World {
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
     List<Citizen> citizensToRemove = new List<Citizen>();
+    List<Food> foodToRemove = new List<Food>();
 
     World() {
         Random rand = new Random();
@@ -193,6 +194,8 @@ class World {
     }
 
     void foodTick() {
+        foodToRemove.forEach((Food f) => food.remove(f));
+        foodToRemove.clear();
         drawFoodPheremones();
         food.forEach((Food f) => f.tick(citizenCanvas,dirtCanvas,this));
     }

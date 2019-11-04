@@ -152,6 +152,7 @@ class Citizen {
     }
 
     void drop() {
+        if(food == null) return;
         food.beingCarried = false;
         food = null;
     }
@@ -276,7 +277,13 @@ class Citizen {
             state = SEARCHING_QUEEN;
             initializeSprites();
         }
-        age ++;
+        if(food == null) {
+            age ++;
+        }else { //nibble on the food to stay alive.
+            age += -1;
+            food.foodValue += -1;
+            if(food.foodValue <= 0) drop();
+        }
         if(age > maxAge) die(world);
         if(food != null) {
             queenSmells = -1000; //shit find the queen.
