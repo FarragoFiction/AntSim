@@ -11,6 +11,9 @@ class World {
     static const String DIGMODE = "DIGMODE";
     static const String DIRTMODE = "DIRTMODE";
     static const String FOODMODE = "FOODMODE";
+    bool viewQueenPheremones = false;
+    bool viewFoodPheremones = false;
+
     String mode = DIGMODE;
     ImageElement dirt;
     //TODO probably seperate out the camera into its own thing
@@ -236,8 +239,14 @@ class World {
         screenCanvas.context2D.drawImage(dirtCanvas, cameraUpperLeftX, cameraUpperLeftY);
         screenCanvas.context2D.drawImage(citizenCanvas, cameraUpperLeftX, cameraUpperLeftY);
         //only turn on phermone layers for debug purposes
-        //screenCanvas.context2D.drawImage(queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
-        //screenCanvas.context2D.drawImage(foodPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        if(viewQueenPheremones) {
+            screenCanvas.context2D.drawImage(
+                queenPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        }
+        if(viewFoodPheremones) {
+            screenCanvas.context2D.drawImage(
+                foodPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        }
 
 
     }

@@ -159,7 +159,7 @@ class Citizen {
 
     void die(World w) {
         drop();
-        Food myCorpse = new Food(x,y)..foodValue = 13; //enough to make a new bee, if you can collect it
+        Food myCorpse = new Food(x,y)..foodValue = 33; //enough to make a new bee, if you can collect it
         w.food.add(myCorpse);
         w.citizensToRemove.add(this);
     }

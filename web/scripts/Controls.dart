@@ -17,7 +17,35 @@ abstract class Controls {
         digButton(container, world);
         dirtButton(container,world);
         foodButton(container,world);
+        queenPheremoneButton(container,world);
+        foodPheremoneButton(container,world);
         fileUpload(container, world, parent);
+    }
+
+    static void queenPheremoneButton(DivElement container, World world) {
+        ButtonElement button = new ButtonElement()..text = "View Queen Pheremones";
+        container.append(button);
+        button.onClick.listen((Event e) {
+            world.viewQueenPheremones = !world.viewQueenPheremones;
+            if(world.viewQueenPheremones) {
+                button.classes.add("mode-selected");
+            }else {
+                button.classes.remove("mode-selected");
+            }
+        });
+    }
+
+    static void foodPheremoneButton(DivElement container, World world) {
+        ButtonElement button = new ButtonElement()..text = "View Food Pheremones";
+        container.append(button);
+        button.onClick.listen((Event e) {
+            world.viewFoodPheremones = !world.viewFoodPheremones;
+            if(world.viewFoodPheremones) {
+                button.classes.add("mode-selected");
+            }else {
+                button.classes.remove("mode-selected");
+            }
+        });
     }
 
     static void foodButton(DivElement container, World world) {

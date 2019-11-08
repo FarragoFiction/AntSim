@@ -24,7 +24,7 @@ class Food {
 
     CanvasElement initializeCanvas(ImageElement image) {
         int width = image.width;
-        if(width == null || width == 0) width = 13;
+        if(width == null || width == 0) width = size;
         CanvasElement canvas = new CanvasElement(width: width, height: width);
         if(image.width != 0) {
             canvas.context2D.drawImage(image,0,0);
@@ -48,9 +48,10 @@ class Food {
 
 
     void drawPheremones(CanvasElement pheremoneCanvas) {
-        if(beingCarried) return;
+        if(beingCarried || foodValue <=0) return;
         int radius = foodValue*2;
         int bands = 10;
+        if(radius/bands < 0) bands = 1;
         var grd = pheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);
         grd.addColorStop(0, "rgb(255, 0, 0, 1.0)");
         grd.addColorStop(1, "rgb(255, 0, 0,0.0)");
