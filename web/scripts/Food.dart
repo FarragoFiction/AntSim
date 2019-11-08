@@ -13,7 +13,7 @@ class Food {
     //in world coordinates, not screen coordinates
     int x = 1000;
     int y = 1000;
-    int size = 13;
+    int size = 18;
     bool beingCarried = false;
 
     int foodValue = 255;
@@ -49,7 +49,7 @@ class Food {
 
     void drawPheremones(CanvasElement pheremoneCanvas) {
         if(beingCarried) return;
-        int radius = 500;
+        int radius = foodValue*2;
         int bands = 10;
         var grd = pheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);
         grd.addColorStop(0, "rgb(255, 0, 0, 1.0)");
