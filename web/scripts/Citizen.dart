@@ -192,11 +192,14 @@ class Citizen {
 
     //TODO pheremone check for direction (and ability to put pheremones down)
     void move(World world , [bool secondTry = false]) {
-        bool foundPheremone = considerPheremones(world);
-
-        if(secondTry || (!foundPheremone && new Random().nextDouble() < 0.01)) {
-            changeDirectionRandomly();
+        bool foundPheremone = false;
+        if(new Random().nextDouble() < 0.6) { //don't check every time.
+            foundPheremone = considerPheremones(world);
+            if(secondTry || (!foundPheremone && new Random().nextDouble() < 0.01)) {
+                changeDirectionRandomly();
+            }
         }
+
         int speed = canDig ? digSpeed: runSpeed;
         int xgoal = x+(Math.cos(angle* Math.pi/180)*speed).round();
         int ygoal = y+(Math.sin(angle*Math.pi/180)*speed).round();
