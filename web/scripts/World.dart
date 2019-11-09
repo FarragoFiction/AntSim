@@ -21,7 +21,7 @@ class World {
     int cameraUpperLeftY = -500;
     int maxSubjects = 113;
     static int cameraWidth = 1000;
-    static int cameraHeight = 1000;
+    static int cameraHeight = 600;
     int maxCitizens = 113;
     static int worldWidth = 2000;
     static int worldHeight = 2000;
@@ -99,7 +99,7 @@ class World {
         screenCanvas.onMouseMove.listen((MouseEvent e) {
             Rectangle rect = screenCanvas.getBoundingClientRect();
             Point point = new Point(e.client.x-rect.left, e.client.y-rect.top);
-            moveCamera(point);
+           // moveCamera(point);
             if(mouseDown) {
                 if(mode == DIGMODE) {
                     removeChunk(point);
@@ -148,6 +148,26 @@ class World {
         spawnFoodAtPoint(x.round(),y.round());
     }
 
+    void moveCameraLeft() {
+        cameraUpperLeftX += 10;
+        handleCameraMove();
+    }
+
+    void moveCameraRight() {
+        cameraUpperLeftX += -10;
+        handleCameraMove();
+    }
+
+    void moveCameraUp() {
+        cameraUpperLeftY += 10;
+        handleCameraMove();
+    }
+
+    void moveCameraDown() {
+        cameraUpperLeftY += -10;
+        handleCameraMove();
+    }
+
     void moveCamera(Point p) {
         //left
         if(p.x < 100) {
@@ -162,12 +182,16 @@ class World {
             cameraUpperLeftY += -10;
         }
 
-        if(cameraUpperLeftY > maxHeight) cameraUpperLeftY = maxHeight;
-        if(cameraUpperLeftY < minHeight) cameraUpperLeftY = minHeight;
-        if(cameraUpperLeftX < minWidth) cameraUpperLeftX = minWidth;
-        if(cameraUpperLeftX > maxWidth) cameraUpperLeftX = maxWidth;
+        handleCameraMove();
+    }
 
-        syncCamera();
+    void handleCameraMove() {
+      if(cameraUpperLeftY > maxHeight) cameraUpperLeftY = maxHeight;
+      if(cameraUpperLeftY < minHeight) cameraUpperLeftY = minHeight;
+      if(cameraUpperLeftX < minWidth) cameraUpperLeftX = minWidth;
+      if(cameraUpperLeftX > maxWidth) cameraUpperLeftX = maxWidth;
+
+      syncCamera();
     }
 
     bool canSpawn() {

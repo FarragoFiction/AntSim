@@ -6,7 +6,9 @@ import 'scripts/World.dart';
 
 void main() async{
   World world = new World();
-  Controls.generate(querySelector("#output"), world);
+  DivElement controls = new DivElement();
+  querySelector("#output").append(controls);
+  Controls.generate(controls, world);
   world.attachToScreen(querySelector("#output"));
   world.tick();
   //testMath(world);
