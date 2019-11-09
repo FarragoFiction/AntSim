@@ -136,8 +136,11 @@ class World {
     void spawnDirtChunk(Point point) {
         double x = point.x -cameraUpperLeftX;
         double y = point.y -cameraUpperLeftY;
-        int size = 33;
-        dirtCanvas.context2D.setFillColorRgb(96,59,23);
+        int size = 22;
+        Random rand = new Random();
+        double saturation = rand.nextDoubleRange(50.0,100.0);
+        double lumin = rand.nextDoubleRange(0.0,30.0);
+        dirtCanvas.context2D.setFillColorHsl(26,saturation,lumin);
         dirtCanvas.context2D.fillRect(x-size/2,y-size/2,size, size);
         syncCamera();
     }
