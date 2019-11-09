@@ -87,11 +87,12 @@ class World {
     }
 
     void attachToScreen(Element container) async {
+        ImageElement frame = new ImageElement(src: "images/frame.png")..classes.add("frame");
+        container.append(frame);
         container.append(screenCanvas);
         await initImage();
         drawQueenPheremones();
         dirtCanvas.context2D.drawImageScaled(dirt,0,0,2000,2000);
-        //TODO figure out what portion of the image to render.
         screenCanvas.style.backgroundImage = "url(images/skybox.png)";
         syncCamera();
         bool mouseDown = false;
