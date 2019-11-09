@@ -5,6 +5,16 @@ import 'World.dart';
 
 abstract class Controls {
     static  List<ButtonElement> modeButtons = new List<ButtonElement>();
+    static ButtonElement leftButton;
+    static ButtonElement rightButton;
+    static ButtonElement upButton;
+    static ButtonElement downButton;
+    static String LEFT = "left";
+    static String RIGHT = "right";
+    static String UP = "up";
+    static String DOWN = "down";
+
+
     static AudioElement soundEffects = new AudioElement();
 
     static bool cameraFiring = false;
@@ -12,6 +22,18 @@ abstract class Controls {
     static void toggleMode(ButtonElement chosen) {
         modeButtons.forEach((ButtonElement b) => b.classes.remove("mode-selected"));
         chosen.classes.add("mode-selected");
+    }
+
+    static void toggleArrow(String direction) {
+        String className = "mode-selected";
+        leftButton.classes.remove(className);
+        rightButton.classes.remove(className);
+        upButton.classes.remove(className);
+        downButton.classes.remove(className);
+        if(direction == LEFT) leftButton.classes.add(className);
+        if(direction == RIGHT) rightButton.classes.add(className);
+        if(direction == UP) upButton.classes.add(className);
+        if(direction == DOWN) downButton.classes.add(className);
     }
 
     static void generate(Element parent, World world) {
@@ -31,57 +53,93 @@ abstract class Controls {
         rightCamera(container,world);
         upCamera(container,world);
         downCamera(container,world);
+        wireUpKeyboard(world);
     }
 
+    static wireUpKeyboard(world) {
+        window.onKeyDown.listen((KeyboardEvent e){
+            if(e.keyCode == KeyCode.LEFT) {
+                toggleArrow(LEFT);
+                world.moveCameraLeft();
+            }else if(e.keyCode == KeyCode.RIGHT) {
+                toggleArrow(RIGHT);
+                world.moveCameraRight();
+            }else if(e.keyCode == KeyCode.UP) {
+                toggleArrow(UP);
+                world.moveCameraUp();
+            }else if(e.keyCode == KeyCode.DOWN) {
+                toggleArrow(DOWN);
+                world.moveCameraDown();
+            }
+        });
+
+        window.onKeyUp.listen((KeyboardEvent e) {
+            toggleArrow("none");
+        });
+
+        }
+
     static void leftCamera(DivElement container, World world) {
-        ButtonElement leftButton = new ButtonElement()..text = "<";
+        leftButton = new ButtonElement()..text = "<";
         container.append(leftButton);
+
+        window.onKeyUp.listen((Event e) {
+            cameraFiring = false;
+        });
         leftButton.onMouseDown.listen((Event e) {
             cameraFiring = true;
             world.moveCameraLeft();
             keepFiring(world.moveCameraLeft);
+            toggleArrow(LEFT);
         });
         leftButton.onMouseUp.listen((Event e) {
             cameraFiring = false;
+            toggleArrow("none");
         });
     }
 
     static void rightCamera(DivElement container, World world) {
-        ButtonElement button = new ButtonElement()..text = ">";
-        container.append(button);
-        button.onMouseDown.listen((Event e) {
+        rightButton = new ButtonElement()..text = ">";
+        container.append(rightButton);
+        rightButton.onMouseDown.listen((Event e) {
             cameraFiring = true;
             world.moveCameraRight();
             keepFiring(world.moveCameraRight);
+            toggleArrow(RIGHT);
         });
-        button.onMouseUp.listen((Event e) {
+        rightButton.onMouseUp.listen((Event e) {
             cameraFiring = false;
+            toggleArrow("none");
         });
     }
 
     static void upCamera(DivElement container, World world) {
-        ButtonElement button = new ButtonElement()..text = "^";
-        container.append(button);
-        button.onMouseDown.listen((Event e) {
+        upButton = new ButtonElement()..text = "^";
+        container.append(upButton);
+        upButton.onMouseDown.listen((Event e) {
             cameraFiring = true;
             world.moveCameraUp();
             keepFiring(world.moveCameraUp);
+            toggleArrow(UP);
         });
-        button.onMouseUp.listen((Event e) {
+        upButton.onMouseUp.listen((Event e) {
             cameraFiring = false;
+            toggleArrow("none");
         });
     }
 
     static void downCamera(DivElement container, World world) {
-        ButtonElement button = new ButtonElement()..text = "v";
-        container.append(button);
-        button.onMouseDown.listen((Event e) {
+        downButton = new ButtonElement()..text = "v";
+        container.append(downButton);
+        downButton.onMouseDown.listen((Event e) {
             cameraFiring = true;
             world.moveCameraDown();
             keepFiring(world.moveCameraDown);
+            toggleArrow(DOWN);
         });
-        button.onMouseUp.listen((Event e) {
+        downButton.onMouseUp.listen((Event e) {
             cameraFiring = false;
+            toggleArrow("none");
         });
     }
 
