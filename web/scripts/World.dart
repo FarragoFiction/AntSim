@@ -4,6 +4,7 @@ import 'package:CommonLib/Random.dart';
 import 'package:LoaderLib/Loader.dart';
 import 'package:dynamicMusic/dynamicMusic.dart';
 import 'Citizen.dart';
+import 'Enemy.dart';
 import 'Food.dart';
 import 'Queen.dart';
 
@@ -13,6 +14,7 @@ class World {
     static const String DIRTMODE = "DIRTMODE";
     bool initializingMusic = false;
     static const String FOODMODE = "FOODMODE";
+    bool viewEnemyPheremones = false;
     bool viewQueenPheremones = false;
     bool viewFoodPheremones = false;
     DynamicSong song;
@@ -41,10 +43,14 @@ class World {
     CanvasElement dirtCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     CanvasElement queenPheremoneCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     CanvasElement foodPheremoneCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
+    CanvasElement enemyPheremoneCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
 
     CanvasElement citizenCanvas = new CanvasElement(width:worldWidth,height:worldHeight);
     List<Citizen> citizens = new List<Citizen>();
+    List<Enemy> enemies = new List<Enemy>();
+
     List<Citizen> citizensToRemove = new List<Citizen>();
+    List<Enemy> enemiesToRemove = new List<Enemy>();
     List<Food> foodToRemove = new List<Food>();
 
     World() {
@@ -54,6 +60,7 @@ class World {
             int y = rand.nextInt(1500)+30;
             citizens.add(new Citizen(1000, 900)..canDig=true);
         }
+        enemies.add(new Enemy(500,500));
         queens.add(new Queen());
         for(int i =0; i< 3; i++) {
             int x = rand.nextInt(1500)+30;
@@ -79,6 +86,13 @@ class World {
         queenPheremoneCanvas.context2D.clearRect(0,0,queenPheremoneCanvas.width, queenPheremoneCanvas.height);
         for(Queen queen in queens) {
             queen.drawPheremones(queenPheremoneCanvas);
+        }
+    }
+
+    void drawEnemyPheremones() {
+        enemyPheremoneCanvas.context2D.clearRect(0,0,enemyPheremoneCanvas.width, enemyPheremoneCanvas.height);
+        for(Enemy enemy in enemies) {
+            enemy.drawPheremones(enemyPheremoneCanvas);
         }
     }
 
@@ -149,6 +163,7 @@ class World {
         container.append(screenCanvas);
         await initImage();
         drawQueenPheremones();
+        drawEnemyPheremones();
         dirtCanvas.context2D.drawImageScaled(dirt,0,0,2000,2000);
         screenCanvas.style.backgroundImage = "url(images/skybox.png)";
         syncCamera();
@@ -273,7 +288,11 @@ class World {
     void citizenTick() {
         citizensToRemove.forEach((Citizen c) => citizens.remove(c));
         citizensToRemove.clear();
+        enemiesToRemove.forEach((Enemy c) => enemies.remove(c));
+        enemiesToRemove.clear();
         citizenCanvas.context2D.clearRect(0,0,worldWidth, worldHeight);
+        enemies.forEach((Enemy e) => e.tick(this));
+        drawEnemyPheremones();
         citizens.forEach((Citizen c) => c.tick(this));
     }
 
@@ -332,6 +351,11 @@ class World {
         if(viewFoodPheremones) {
             screenCanvas.context2D.drawImage(
                 foodPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
+        }
+
+        if(viewEnemyPheremones) {
+            screenCanvas.context2D.drawImage(
+                enemyPheremoneCanvas, cameraUpperLeftX, cameraUpperLeftY);
         }
 
 

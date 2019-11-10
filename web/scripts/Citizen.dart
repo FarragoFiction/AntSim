@@ -190,7 +190,6 @@ class Citizen {
         return true;
     }
 
-    //TODO pheremone check for direction (and ability to put pheremones down)
     void move(World world , [bool secondTry = false]) {
         bool foundPheremone = false;
         if(new Random().nextDouble() < 0.6) { //don't check every time.

@@ -44,6 +44,7 @@ abstract class Controls {
         dirtButton(parent,world);
         foodButton(parent,world);
         queenPheremoneButton(parent,world);
+        enemyPheremoneButton(parent,world);
         foodPheremoneButton(parent,world);
         fileUpload(parent, world, parent);
     }
@@ -150,6 +151,19 @@ abstract class Controls {
              keepFiring(func)
         });
 
+    }
+
+    static void enemyPheremoneButton(DivElement container, World world) {
+        ButtonElement button = new ButtonElement()..text = "View Enemy Pheremones";
+        container.append(button);
+        button.onClick.listen((Event e) {
+            world.viewEnemyPheremones = !world.viewEnemyPheremones;
+            if(world.viewEnemyPheremones) {
+                button.classes.add("mode-selected");
+            }else {
+                button.classes.remove("mode-selected");
+            }
+        });
     }
 
     static void queenPheremoneButton(DivElement container, World world) {
