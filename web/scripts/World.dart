@@ -165,7 +165,9 @@ class World {
         game.append(frame);
         DivElement instructions = new DivElement()..text = "CLICK TO START"..classes.add("start");
         game.append(instructions);
-        window.onClick.listen((Event e) {
+        StreamSubscription listener;
+        listener = window.onClick.listen((Event e) {
+            listener.cancel();
             start();
             instructions.remove();
         });
@@ -197,11 +199,17 @@ class World {
         screenCanvas.onMouseDown.listen((MouseEvent e) {
             mouseDown = true;
             print("mode is $mode");
+            Rectangle rect = screenCanvas.getBoundingClientRect();
+            Point point = new Point(e.client.x-rect.left, e.client.y-rect.top);
             if(mode == FOODMODE) {
-                Rectangle rect = screenCanvas.getBoundingClientRect();
-                Point point = new Point(e.client.x-rect.left, e.client.y-rect.top);
+
                 spawnFoodChunk(point);
+            }else if(mode == DIGMODE) {
+                removeChunk(point);
+            }else if(mode == DIRTMODE) {
+                spawnDirtChunk(point);
             }
+
         });
 
         screenCanvas.onMouseUp.listen((MouseEvent e) {
