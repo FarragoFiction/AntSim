@@ -11,10 +11,13 @@ void main() async{
   DivElement controls = new DivElement();
   querySelector("#output").append(controls);
   Controls.generate(controls, world);
-  world.tick();
-  world.spawnEnemyLoop();
+  DivElement instructions = new DivElement();
+
+
   //testMath(world);
 }
+
+
 
 void testMath(World world) {
   Citizen subject = world.citizens.first;

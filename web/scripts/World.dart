@@ -107,23 +107,19 @@ class World {
         if(song == null && !initializingMusic) {
             print("initializing music");
             initializingMusic = true;
-            dynamic listener;
-            listener = window.onMouseMove.listen((Event e) {
-                listener.cancel();
-                musicIndex = antCountToIndex();
-                List<String> urls = [
-                    "music/ant1.mp3",
-                    "music/ant2.mp3",
-                    "music/ant3.mp3",
-                    "music/ant4.mp3",
-                    "music/ant5.mp3",
-                    "music/ant6.mp3",
-                    "music/ant7.mp3",
-                    "music/ant8.mp3"
-                ];
-                song = new DynamicSong(urls);
-                song.startWhenReady();
-            });
+            musicIndex = antCountToIndex();
+            List<String> urls = [
+                "music/ant1.mp3",
+                "music/ant2.mp3",
+                "music/ant3.mp3",
+                "music/ant4.mp3",
+                "music/ant5.mp3",
+                "music/ant6.mp3",
+                "music/ant7.mp3",
+                "music/ant8.mp3"
+            ];
+            song = new DynamicSong(urls);
+            song.startWhenReady();
         }else if(song != null){
             int hopefulIndex = antCountToIndex();
             if (musicIndex != hopefulIndex) {
@@ -157,11 +153,23 @@ class World {
         }
     }
 
+    void start() {
+        tick();
+        spawnEnemyLoop();
+    }
+
     void attachToScreen(Element container) async {
         DivElement game = new DivElement()..classes.add("game");
         container.append(game);
         ImageElement frame = new ImageElement(src: "images/frame.png")..classes.add("frame");
         game.append(frame);
+        DivElement instructions = new DivElement()..text = "CLICK TO START"..classes.add("start");
+        game.append(instructions);
+        window.onClick.listen((Event e) {
+            start();
+            instructions.remove();
+        });
+
         screenCanvas.classes.add("gameviewport");
         game.append(screenCanvas);
         await initImage();

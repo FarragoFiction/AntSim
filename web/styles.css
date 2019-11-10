@@ -15,13 +15,19 @@ html, body {
 .gameviewport{
     position: absolute;
     top: 62px;
-    left: 241px;
+    left: 269px;
     z-index: 10;
-
 }
 
-#output {
-  text-align: center;
+
+.start{
+    position: absolute;
+    top: 35%;
+    left: 35%;
+    z-index: 13;
+    font-size: 72px;
+    color: #2d1d1b;
+
 }
 
 .mode-selected{
