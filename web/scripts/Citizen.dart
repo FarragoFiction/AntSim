@@ -240,7 +240,7 @@ class Citizen {
             if(canDig) {
                 tintRed(canvas);
             }else if (state == SEARCHING_QUEEN) {
-                tintYellow(canvas);
+                //tintYellow(canvas);
             }
         }
         image.onLoad.listen((Event e) {
@@ -248,7 +248,7 @@ class Citizen {
             if(canDig) {
                 tintRed(canvas);
             }else if (state == SEARCHING_QUEEN) {
-                tintYellow(canvas);
+                //tintYellow(canvas);
             }
         });
         return canvas;

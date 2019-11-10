@@ -2,17 +2,19 @@ import 'dart:async';
 import 'dart:html';
 import 'package:CommonLib/Random.dart';
 import 'package:LoaderLib/Loader.dart';
-
+import 'package:dynamicMusic/dynamicMusic.dart';
 import 'Citizen.dart';
 import 'Food.dart';
 import 'Queen.dart';
 
 class World {
     static const String DIGMODE = "DIGMODE";
+    int musicIndex = 0;
     static const String DIRTMODE = "DIRTMODE";
     static const String FOODMODE = "FOODMODE";
     bool viewQueenPheremones = false;
     bool viewFoodPheremones = false;
+    DynamicSong song;
 
     String mode = DIGMODE;
     ImageElement dirt;
@@ -86,9 +88,46 @@ class World {
         }
     }
 
+    void setMusic() {
+        if(song == null) {
+            print("initializing music");
+            musicIndex = antCountToIndex();
+            List<String> urls = ["music/ant1.mp3", "music/ant2.mp3", "music/ant3.mp3","music/ant4.mp3", "music/ant5.mp3", "music/ant6.mp3","music/ant7.mp3", "music/ant8.mp3"];
+            song = new DynamicSong(urls);
+            song.startWhenReady();
+        }
+        int hopefulIndex = antCountToIndex();
+        if(musicIndex != hopefulIndex) {
+            print("hopeful index is differnet, changing from ${musicIndex} to ${hopefulIndex} at time ${DateTime.now()}");
+            musicIndex = hopefulIndex;
+            song.swapSong(musicIndex);
+        }
+    }
+
+    //8 total
+    int antCountToIndex() {
+        if(citizens.length < 3) {
+            return 0;
+        }else if(citizens.length < 13) {
+            return 1;
+        }else if(citizens.length < 25) {
+            return 2;
+        }else if(citizens.length < 45) {
+            return 3;
+        }else if(citizens.length < 60) {
+            return 4;
+        }else if(citizens.length < 80) {
+            return 5;
+        }else if(citizens.length < 100) {
+            return 6;
+        }else{
+            return 7;
+        }
+    }
+
     void attachToScreen(Element container) async {
-        ImageElement frame = new ImageElement(src: "images/frame.png")..classes.add("frame");
-        container.append(frame);
+        //ImageElement frame = new ImageElement(src: "images/frame.png")..classes.add("frame");
+        //container.append(frame);
         container.append(screenCanvas);
         await initImage();
         drawQueenPheremones();
@@ -203,6 +242,7 @@ class World {
     }
 
     void tick() {
+        setMusic();
         citizenTick();
         queenTick();
         foodTick();
