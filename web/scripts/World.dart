@@ -93,7 +93,9 @@ class World {
         if(song == null && !initializingMusic) {
             print("initializing music");
             initializingMusic = true;
-            window.onMouseMove.listen((Event e) {
+            dynamic listener;
+            listener = window.onMouseMove.listen((Event e) {
+                listener.cancel();
                 musicIndex = antCountToIndex();
                 List<String> urls = [
                     "music/ant1.mp3",
