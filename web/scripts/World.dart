@@ -91,16 +91,30 @@ class World {
     void setMusic() {
         if(song == null) {
             print("initializing music");
-            musicIndex = antCountToIndex();
-            List<String> urls = ["music/ant1.mp3", "music/ant2.mp3", "music/ant3.mp3","music/ant4.mp3", "music/ant5.mp3", "music/ant6.mp3","music/ant7.mp3", "music/ant8.mp3"];
-            song = new DynamicSong(urls);
-            song.startWhenReady();
-        }
-        int hopefulIndex = antCountToIndex();
-        if(musicIndex != hopefulIndex) {
-            print("hopeful index is differnet, changing from ${musicIndex} to ${hopefulIndex} at time ${DateTime.now()}");
-            musicIndex = hopefulIndex;
-            song.swapSong(musicIndex);
+            window.onMouseMove.listen((Event e) {
+                musicIndex = antCountToIndex();
+                List<String> urls = [
+                    "music/ant1.mp3",
+                    "music/ant2.mp3",
+                    "music/ant3.mp3",
+                    "music/ant4.mp3",
+                    "music/ant5.mp3",
+                    "music/ant6.mp3",
+                    "music/ant7.mp3",
+                    "music/ant8.mp3"
+                ];
+                song = new DynamicSong(urls);
+                song.startWhenReady();
+            });
+        }else {
+            int hopefulIndex = antCountToIndex();
+            if (musicIndex != hopefulIndex) {
+                print(
+                    "hopeful index is differnet, changing from ${musicIndex} to ${hopefulIndex} at time ${DateTime
+                        .now()}");
+                musicIndex = hopefulIndex;
+                song.swapSong(musicIndex);
+            }
         }
     }
 
