@@ -110,7 +110,7 @@ class World {
                 song = new DynamicSong(urls);
                 song.startWhenReady();
             });
-        }else {
+        }else if(song != null){
             int hopefulIndex = antCountToIndex();
             if (musicIndex != hopefulIndex) {
                 print(
