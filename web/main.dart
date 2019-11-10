@@ -11,6 +11,7 @@ void main() async{
   Controls.generate(controls, world);
   world.attachToScreen(querySelector("#output"));
   world.tick();
+  world.spawnEnemyLoop();
   //testMath(world);
 }
 

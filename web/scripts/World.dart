@@ -33,6 +33,7 @@ class World {
     static int minHeight = -1000;
     static int maxHeight = 0;
     int tickRate = 100;
+    int enemyRate = 20000;
     static int minWidth = -1000;
     static int maxWidth = 0;
     //i only expect one but one never can be too careful
@@ -60,7 +61,6 @@ class World {
             int y = rand.nextInt(1500)+30;
             citizens.add(new Citizen(1000, 900)..canDig=true);
         }
-        enemies.add(new Enemy(500,500));
         queens.add(new Queen());
         for(int i =0; i< 3; i++) {
             int x = rand.nextInt(1500)+30;
@@ -274,6 +274,15 @@ class World {
         return citizens.length < maxCitizens;
     }
 
+    void spawnEnemyLoop() {
+        if(enemies.length < 3) {
+            enemies.add(new Enemy(new Random().nextIntRange(200, 1600), 500));
+        }
+        new Timer(new Duration(milliseconds: enemyRate), () => {
+        spawnEnemyLoop()
+        });
+    }
+
     void tick() {
         setMusic();
         citizenTick();
@@ -314,7 +323,7 @@ class World {
         //then give it to the citizen (who will carry it)
         Food chosen;
         for(Food f in food) {
-            if((f.x - c.x).abs() < 10) {
+            if((f.x - c.x).abs() < 10 && (f.y - c.y).abs() < 10) {
                 chosen = f;
                 break;
             }
@@ -322,6 +331,23 @@ class World {
         if(chosen != null) {
             c.carry(chosen);
         }
+    }
+
+    void checkCombat(Enemy enemy) {
+        bool killedOne = false;
+        int hitCount = 0;
+        Random rand = new Random();
+        for(Citizen c in citizens) {
+            int radius = 75;
+            if((enemy.x - c.x).abs() < radius && (enemy.y - c.y).abs() < radius) {
+                if(!killedOne && rand.nextDouble() < 0.3) {
+                    c.die(this);
+                }else {
+                    hitCount ++;
+                }
+            }
+        }
+        if(hitCount != 0) enemy.applyHits(this,hitCount);
     }
 
     //give queen nearest to this x,y food

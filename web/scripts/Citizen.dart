@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:CommonLib/Random.dart';
 import 'dart:math' as Math;
 
+import 'Controls.dart';
 import 'Food.dart';
 import 'Queen.dart';
 import 'World.dart';
@@ -108,7 +109,13 @@ class Citizen {
     //deal with it.
     bool considerPheremones(World world) {
         if(queenSmells <= 0) return considerQueen(world);
-        if(food == null) return considerFood(world);
+        //if you have food immune to pheremones besides queen ones
+        if(food == null){
+            bool considerFoodResult = considerFood(world);
+            if(considerFoodResult == true) return true;
+            bool considerEnemyResult = considerEnemy(world);
+            if(considerEnemyResult == true) return true;
+        }
         return false;
     }
 
@@ -158,6 +165,7 @@ class Citizen {
     }
 
     void die(World w) {
+        Controls.playSoundEffect("85846__mwlandi__meat-slap-2");
         drop();
         Food myCorpse = new Food(x,y)..foodValue = 33; //enough to make a new bee, if you can collect it
         w.food.add(myCorpse);
@@ -171,6 +179,30 @@ class Citizen {
         if(data[3] > 250 && food == null) {
             world.giveCitizenFood(this);
         }
+        int max = 0;
+        List<int> possibleIndices = new List<int>();
+        for(int i =0; i<data.length; i+=4) {
+            if(data[i+3]>= max){
+
+                if(max != data[i+3]) {
+                    possibleIndices.clear();
+                    max = data[i+3];
+                }
+                possibleIndices.add(i);
+            }
+        }
+        if(max == 0 || possibleIndices.isEmpty) return false;
+        int index = new Random().pickFrom(possibleIndices);
+        if(index == null) return false;
+        angle = indexToAngle(index, width);
+        return true;
+    }
+
+
+    bool considerEnemy(World world) {
+        int width = (size).floor();
+        ImageData imgData = world.enemyPheremoneCanvas.context2D.getImageData(x, y, width,width);
+        Uint8ClampedList data = imgData.data; //Uint8ClampedList
         int max = 0;
         List<int> possibleIndices = new List<int>();
         for(int i =0; i<data.length; i+=4) {

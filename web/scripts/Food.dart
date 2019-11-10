@@ -52,14 +52,12 @@ class Food {
         int radius = foodValue*2;
         int bands = 10;
         if(radius/bands < 0) bands = 1;
-        int xCenter = (x+size/2).round();
-        int yCenter = (y+size/2).round();
-        var grd = pheremoneCanvas.context2D.createRadialGradient(xCenter,yCenter,radius/bands, xCenter,yCenter,radius);
+        var grd = pheremoneCanvas.context2D.createRadialGradient(x,y,radius/bands, x,y,radius);
         grd.addColorStop(0, "rgb(255, 0, 0, 1.0)");
         grd.addColorStop(1, "rgb(255, 0, 0,0.0)");
         pheremoneCanvas.context2D.beginPath();
         pheremoneCanvas.context2D.arc(
-            xCenter, yCenter, radius, 0, Math.pi * 2, true);
+            x, y, radius, 0, Math.pi * 2, true);
         pheremoneCanvas.context2D.fillStyle = grd;
         pheremoneCanvas.context2D.fill();
     }

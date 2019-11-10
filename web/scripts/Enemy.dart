@@ -3,9 +3,10 @@ import 'dart:typed_data';
 import 'package:CommonLib/Random.dart';
 import 'dart:math' as Math;
 
+import 'Controls.dart';
 import 'Food.dart';
 import 'World.dart';
-class Enemy {
+class Enemy { //pigeon
     String imageLocationLeft = "images/friend.png";
     String imageLocationRight = "images/friendRight.png";
 
@@ -16,8 +17,9 @@ class Enemy {
     //in world coordinates, not screen coordinates
     int x;
     int y;
+    int hp =13; //have to take hp hits before dying.
     int angle = 0;
-    int runSpeed = 10;
+    int runSpeed = 5;
     int size = 100;
     int age = 0;
     int maxAge = 777;
@@ -92,19 +94,26 @@ class Enemy {
         return (i / width).floor();
     }
 
+    void applyHits(World w, int hits) {
+        print("apply hits: $hits, hp is $hp");
+        hp += -1 * hits;
+        if(hp <=0) die(w);
+    }
+
     void die(World w) {
-        Food myCorpse = new Food(x,y)..foodValue = 113; //enough to make a new bee, if you can collect it
+        Controls.playSoundEffect("428114__higgs01__squeakfinal");
+        Food myCorpse = new Food(x,y)..foodValue = 222; //enough to make a new bee, if you can collect it
         w.food.add(myCorpse);
         w.enemiesToRemove.add(this);
     }
 
     void drawPheremones(CanvasElement canvas) {
-        int radius = 500;
+        int radius = 800;
         int bands = 255;
         int xCenter = (x+size/2).round();
         int yCenter = (y+size/2).round();
         var grd = canvas.context2D.createRadialGradient(xCenter,yCenter,radius/bands, xCenter,yCenter,radius);
-        grd.addColorStop(0, "rgb(0, 0, 255, 1.0)");
+        grd.addColorStop(0, "rgb(0, 0, 255, 0.5)");
         grd.addColorStop(1, "rgb(0, 0, 255,0)");
         canvas.context2D.beginPath();
         canvas.context2D.arc(
@@ -151,6 +160,7 @@ class Enemy {
         move(world);
         if(canvasLeft == null || canvasRight == null) initializeSprites();
         goRight ? world.citizenCanvas.context2D.drawImage(canvasRight,x, y):world.citizenCanvas.context2D.drawImage(canvasLeft,x, y);
+        world.checkCombat(this);
     }
 
     void initializeSprites() {
