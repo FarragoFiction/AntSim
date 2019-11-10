@@ -6,10 +6,11 @@ import 'scripts/World.dart';
 
 void main() async{
   World world = new World();
+
+  world.attachToScreen(querySelector("#output"));
   DivElement controls = new DivElement();
   querySelector("#output").append(controls);
   Controls.generate(controls, world);
-  world.attachToScreen(querySelector("#output"));
   world.tick();
   world.spawnEnemyLoop();
   //testMath(world);

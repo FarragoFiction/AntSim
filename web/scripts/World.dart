@@ -158,9 +158,12 @@ class World {
     }
 
     void attachToScreen(Element container) async {
-        //ImageElement frame = new ImageElement(src: "images/frame.png")..classes.add("frame");
-        //container.append(frame);
-        container.append(screenCanvas);
+        DivElement game = new DivElement()..classes.add("game");
+        container.append(game);
+        ImageElement frame = new ImageElement(src: "images/frame.png")..classes.add("frame");
+        game.append(frame);
+        screenCanvas.classes.add("gameviewport");
+        game.append(screenCanvas);
         await initImage();
         drawQueenPheremones();
         drawEnemyPheremones();

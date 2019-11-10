@@ -8,8 +8,19 @@ html, body {
   font-family: 'Roboto', sans-serif;
 }
 
+.game{
+    position: relative;
+}
+
+.gameviewport{
+    position: absolute;
+    top: 62px;
+    left: 241px;
+    z-index: 10;
+
+}
+
 #output {
-  padding: 20px;
   text-align: center;
 }
 
