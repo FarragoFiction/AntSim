@@ -11,6 +11,7 @@ class World {
     static const String DIGMODE = "DIGMODE";
     int musicIndex = 0;
     static const String DIRTMODE = "DIRTMODE";
+    bool initializingMusic = false;
     static const String FOODMODE = "FOODMODE";
     bool viewQueenPheremones = false;
     bool viewFoodPheremones = false;
@@ -89,8 +90,9 @@ class World {
     }
 
     void setMusic() {
-        if(song == null) {
+        if(song == null && !initializingMusic) {
             print("initializing music");
+            initializingMusic = true;
             window.onMouseMove.listen((Event e) {
                 musicIndex = antCountToIndex();
                 List<String> urls = [
