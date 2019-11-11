@@ -19,6 +19,110 @@ html, body {
     z-index: 10;
 }
 
+#digactive{
+    position: absolute;
+    top: 167px;
+    left: 146px;
+    z-index: 10;
+}
+
+#digactive:not(.mode-selected){
+    opacity: 0.00;
+}
+
+#digactive:active{
+    transform: translateY(-1px);
+}
+
+#dirtactive{
+    position: absolute;
+    top: 215px;
+    left: 136px;
+    z-index: 10;
+}
+
+#dirtactive:not(.mode-selected){
+    opacity: 0.00;
+}
+
+#dirtactive:active{
+    transform: translateY(-1px);
+}
+
+#foodactive{
+    position: absolute;
+    top: 263px;
+    left: 131px;
+    z-index: 10;
+}
+
+#foodactive:not(.mode-selected){
+    opacity: 0.00;
+}
+
+#foodactive:active{
+    transform: translateY(-1px);
+}
+
+#leftarrow{
+    position: absolute;
+    top: 482px;
+    left: 102px;
+    z-index: 10;
+}
+
+#leftarrow:not(.mode-selected){
+    opacity: 0.00;
+}
+
+#leftarrow:active{
+    transform: translateY(-1px);
+}
+
+#rightarrow{
+    position: absolute;
+    top: 482px;
+    left: 207px;
+    z-index: 10;
+}
+
+#rightarrow:not(.mode-selected){
+    opacity: 0.00;
+}
+
+#rightarrow:active{
+    transform: translateY(-1px);
+}
+
+#uparrow{
+    position: absolute;
+    top: 438px;
+    left: 146px;
+    z-index: 10;
+}
+
+#uparrow:not(.mode-selected){
+    opacity: 0.00;
+}
+
+#uparrow:active{
+    transform: translateY(-1px);
+}
+
+#downarrow{
+    position: absolute;
+    top: 543px;
+    left: 146px;
+    z-index: 10;
+}
+
+#downarrow:not(.mode-selected){
+    opacity: 0.00;
+}
+
+#downarrow:active{
+    transform: translateY(-1px);
+}
 
 .start{
     position: absolute;
@@ -30,6 +134,7 @@ html, body {
 
 }
 
+
 .mode-selected{
-    background-color: red;
+    opacity: 1.00;
 }

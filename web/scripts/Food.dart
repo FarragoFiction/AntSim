@@ -7,7 +7,7 @@ import 'Citizen.dart';
 import 'World.dart';
 
 class Food {
-    String imageLocation = "images/meat.png";
+    String imageLocation = "images/meat2.png";
     ImageElement image;
     CanvasElement canvas;
     //in world coordinates, not screen coordinates

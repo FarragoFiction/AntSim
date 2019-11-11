@@ -4,6 +4,7 @@ import 'package:CommonLib/Random.dart';
 import 'package:LoaderLib/Loader.dart';
 import 'package:dynamicMusic/dynamicMusic.dart';
 import 'Citizen.dart';
+import 'Controls.dart';
 import 'Enemy.dart';
 import 'Food.dart';
 import 'Queen.dart';
@@ -164,6 +165,7 @@ class World {
         ImageElement frame = new ImageElement(src: "images/frame.png")..classes.add("frame");
         game.append(frame);
         DivElement instructions = new DivElement()..text = "CLICK TO START"..classes.add("start");
+        Controls.generate(game, this);
         game.append(instructions);
         StreamSubscription listener;
         listener = window.onClick.listen((Event e) {

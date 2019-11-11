@@ -8,12 +8,6 @@ void main() async{
   World world = new World();
 
   world.attachToScreen(querySelector("#output"));
-  DivElement controls = new DivElement();
-  querySelector("#output").append(controls);
-  Controls.generate(controls, world);
-  DivElement instructions = new DivElement();
-
-
   //testMath(world);
 }
 

@@ -4,11 +4,11 @@ import 'dart:html';
 import 'World.dart';
 
 abstract class Controls {
-    static  List<ButtonElement> modeButtons = new List<ButtonElement>();
-    static ButtonElement leftButton;
-    static ButtonElement rightButton;
-    static ButtonElement upButton;
-    static ButtonElement downButton;
+    static  List<Element> modeButtons = new List<Element>();
+    static Element leftButton;
+    static Element rightButton;
+    static Element upButton;
+    static Element downButton;
     static String LEFT = "left";
     static String RIGHT = "right";
     static String UP = "up";
@@ -19,8 +19,8 @@ abstract class Controls {
 
     static bool cameraFiring = false;
 
-    static void toggleMode(ButtonElement chosen) {
-        modeButtons.forEach((ButtonElement b) => b.classes.remove("mode-selected"));
+    static void toggleMode(Element chosen) {
+        modeButtons.forEach((Element b) => b.classes.remove("mode-selected"));
         chosen.classes.add("mode-selected");
     }
 
@@ -37,16 +37,14 @@ abstract class Controls {
     }
 
     static void generate(Element parent, World world) {
-        DivElement container = new DivElement();
-        parent.append(container);
-        cameraControls(container, world);
+        cameraControls(parent, world);
         digButton(parent, world);
         dirtButton(parent,world);
         foodButton(parent,world);
-        queenPheremoneButton(parent,world);
-        enemyPheremoneButton(parent,world);
-        foodPheremoneButton(parent,world);
-        fileUpload(parent, world, parent);
+        //queenPheremoneButton(parent,world);
+        //enemyPheremoneButton(parent,world);
+        //foodPheremoneButton(parent,world);
+        //fileUpload(parent, world, parent);
     }
 
     static void cameraControls(DivElement container, World world) {
@@ -81,7 +79,8 @@ abstract class Controls {
         }
 
     static void leftCamera(DivElement container, World world) {
-        leftButton = new ButtonElement()..text = "<";
+        print("why is left not working?");
+        leftButton = new ImageElement(src: "images/controls/leftactive.png")..id="leftarrow";
         container.append(leftButton);
 
         window.onKeyUp.listen((Event e) {
@@ -100,7 +99,8 @@ abstract class Controls {
     }
 
     static void rightCamera(DivElement container, World world) {
-        rightButton = new ButtonElement()..text = ">";
+        rightButton = new ImageElement(src: "images/controls/rightactive.png")..id="rightarrow";
+        container.append(leftButton);
         container.append(rightButton);
         rightButton.onMouseDown.listen((Event e) {
             cameraFiring = true;
@@ -115,7 +115,7 @@ abstract class Controls {
     }
 
     static void upCamera(DivElement container, World world) {
-        upButton = new ButtonElement()..text = "^";
+        upButton = new ImageElement(src: "images/controls/upactive.png")..id="uparrow";
         container.append(upButton);
         upButton.onMouseDown.listen((Event e) {
             cameraFiring = true;
@@ -130,7 +130,7 @@ abstract class Controls {
     }
 
     static void downCamera(DivElement container, World world) {
-        downButton = new ButtonElement()..text = "v";
+        downButton = new ImageElement(src: "images/controls/downactive.png")..id="downarrow";
         container.append(downButton);
         downButton.onMouseDown.listen((Event e) {
             cameraFiring = true;
@@ -193,33 +193,36 @@ abstract class Controls {
     }
 
     static void foodButton(DivElement container, World world) {
-      ButtonElement foodButton = new ButtonElement()..text = "Food Mode";
-      modeButtons.add(foodButton);
-      container.append(foodButton);
-      foodButton.onClick.listen((Event e) {
+        ImageElement image = new ImageElement(src: "images/controls/foodactive.png")..id = "foodactive";
+      modeButtons.add(image);
+      container.append(image);
+        image.onClick.listen((Event e) {
+          playSoundEffect("254286__jagadamba__mechanical-switch");
           world.mode = World.FOODMODE;
-          toggleMode(foodButton);
+          toggleMode(image);
       });
     }
 
     static void digButton(DivElement container, World world) {
-       ButtonElement digButton = new ButtonElement()..text = "Dig Mode";
-       toggleMode(digButton); //default
-       modeButtons.add(digButton);
-       container.append(digButton);
-       digButton.onClick.listen((Event e) {
+        ImageElement image = new ImageElement(src: "images/controls/digactive.png")..id = "digactive";
+       toggleMode(image); //default
+       modeButtons.add(image);
+       container.append(image);
+       image.onClick.listen((Event e) {
+           playSoundEffect("254286__jagadamba__mechanical-switch");
            world.mode = World.DIGMODE;
-           toggleMode(digButton);
+           toggleMode(image);
        });
     }
 
     static void dirtButton(DivElement container, World world) {
-        ButtonElement digButton = new ButtonElement()..text = "Dirt Mode";
-        modeButtons.add(digButton);
-        container.append(digButton);
-        digButton.onClick.listen((Event e) {
+        ImageElement image = new ImageElement(src: "images/controls/dirtactive.png")..id = "dirtactive";
+        modeButtons.add(image);
+        container.append(image);
+        image.onClick.listen((Event e) {
+            playSoundEffect("254286__jagadamba__mechanical-switch");
             world.mode = World.DIRTMODE;
-            toggleMode(digButton);
+            toggleMode(image);
         });
     }
 
