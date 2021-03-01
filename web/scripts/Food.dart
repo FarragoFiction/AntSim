@@ -48,7 +48,7 @@ class Food {
 
 
     void drawPheremones(CanvasElement pheremoneCanvas) {
-        if(beingCarried || foodValue <=0) return;
+        if(foodValue <=0) return;
         int radius = foodValue*2;
         int bands = 10;
         if(radius/bands < 0) bands = 1;
