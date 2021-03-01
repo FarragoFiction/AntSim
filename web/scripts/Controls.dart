@@ -196,6 +196,7 @@ abstract class Controls {
         ImageElement image = new ImageElement(src: "images/controls/foodactive.png")..id = "foodactive";
       modeButtons.add(image);
       container.append(image);
+      toggleMode(image); //default
         image.onClick.listen((Event e) {
           playSoundEffect("254286__jagadamba__mechanical-switch");
           world.mode = World.FOODMODE;
@@ -205,7 +206,6 @@ abstract class Controls {
 
     static void digButton(DivElement container, World world) {
         ImageElement image = new ImageElement(src: "images/controls/digactive.png")..id = "digactive";
-       toggleMode(image); //default
        modeButtons.add(image);
        container.append(image);
        image.onClick.listen((Event e) {
