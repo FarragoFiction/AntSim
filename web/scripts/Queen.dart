@@ -92,7 +92,9 @@ class Queen {
         }
         double scale = antihunger/113;
         if(scale < 0.5) scale = 0.5;
-        citizenCanvas.context2D.drawImageScaled(canvas,x,y,(trueSize*scale).round(), (trueSize*scale).round());
+        //TODO make her grow UP not down.
+        int newSize = (trueSize*scale).round();
+        citizenCanvas.context2D.drawImageScaled(canvas,x,y-newSize,newSize, newSize);
     }
 
     void initializeSprites() {
