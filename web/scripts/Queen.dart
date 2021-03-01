@@ -31,6 +31,9 @@ class Queen {
         int width = image.width;
         if(width == null || width == 0) width = trueSize;
         CanvasElement canvas = new CanvasElement(width: width, height: width);
+        if(image.width != null && image.width != 0){
+            canvas.context2D.drawImage(image,0,0);
+        }
         image.onLoad.listen((Event e) {
             canvas.context2D.drawImage(image,0,0);
         });
