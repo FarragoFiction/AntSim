@@ -20,7 +20,7 @@ class World {
     bool viewFoodPheremones = false;
     DynamicSong song;
 
-    String mode = DIGMODE;
+    String mode = FOODMODE;
     ImageElement dirt;
     //TODO probably seperate out the camera into its own thing
     int cameraUpperLeftX = -500;
