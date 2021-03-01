@@ -64,12 +64,10 @@ class Food {
 
     void tick(CanvasElement citizenCanvas, CanvasElement dirtCanvas, World world) {
         initializeSprites();
-        if(falling(dirtCanvas)) {
-            y += 10;
-        }
+        /* top down now
         if(foodValue <=0) {
             world.foodToRemove.add(this);
-        }
+        }*/
         double scale = foodValue/113;
         if(scale < 0.5) scale = 0.5;
         citizenCanvas.context2D.drawImageScaled(canvas,x,y,(size*scale).round(), (size*scale).round());    }

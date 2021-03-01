@@ -27,7 +27,7 @@ class Citizen {
     int angle = 0;
     int runSpeed = 10;
     int digSpeed = 5;
-    int size = 18;
+    int size = 50;
     int age = 0;
     int maxAge = 777;
     bool goRight = true;
@@ -290,7 +290,9 @@ class Citizen {
           0, 0, canvas.width, canvas.height);
       Uint8ClampedList data = imgData.data; //Uint8ClampedList
       for (int i = 0; i < data.length; i += 4) {
-          data[i] = Math.max(255, data[i]+100);
+          data[i] = 141;
+          data[i+1] = 160;
+          data[i+2] = 203;
       }
       canvas.context2D.putImageData(imgData, 0,0);
     }

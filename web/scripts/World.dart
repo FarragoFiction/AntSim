@@ -164,14 +164,19 @@ class World {
         container.append(game);
         ImageElement frame = new ImageElement(src: "images/frame.png")..classes.add("frame");
         game.append(frame);
-        DivElement instructions = new DivElement()..text = "CLICK TO START"..classes.add("start");
+        DivElement instructions = new DivElement()..setInnerHtml("CLICK TO START")..classes.add("start");
+        DivElement instructions2 = new DivElement()..setInnerHtml("(Arrows to Move Camera)")..classes.add("instructions");
+
         Controls.generate(game, this);
         game.append(instructions);
+        game.append(instructions2);
+
         StreamSubscription listener;
         listener = window.onClick.listen((Event e) {
             listener.cancel();
             start();
             instructions.remove();
+            instructions2.remove();
         });
 
         screenCanvas.classes.add("gameviewport");
