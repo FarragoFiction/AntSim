@@ -22,8 +22,8 @@ class Queen {
     int antihunger = 113;
 
     Queen() {
-        x = new Random().nextInt(1500)+100;
-        y = new Random().nextInt(200) + 1000;
+        x = 1000;
+        y = 1000;
         image=new ImageElement(src: imageLocation);
     }
 
