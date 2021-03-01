@@ -244,8 +244,8 @@ class Citizen {
             return;
         }
         if(food != null) {
-            food.x = x;
-            food.y = y;
+            food.x = x+(food.size/2).floor();
+            food.y = y+(food.size/2).floor();
         }
     }
 
